@@ -1,5 +1,6 @@
 from typing import List
 import numpy as np
+from geometry.primitives.screw import Screw
 from geometry.primitives.transformation import Transformation
 
 
@@ -8,20 +9,34 @@ class KinematicOpenChain:
     Represents a kinematic open chain, a series of links joined together.
     """
 
-    def __init__(self, transformations: List[Transformation]):
+    def __init__(self, screws: List[Screw]):
         """Constructor.
 
         Args:
-            transformations: List[Transformation]
-                The transformations from each link to its parent.
+            screws: List[Screw]
+                The screw axes for each joint in the kinematic chain.
         """
-        self.transformations = transformations
-        self.num_links = len(transformations)
+        self.screws = screws
+        self.num_joints = len(screws)
 
-    def forward_kinematics(self, home_position: Transformation) -> Transformation:
+    def transformations(self, joint_angles: np.ndarray) -> List[Transformation]:
+        """...
+
+        Args:
+            joint_angles: np.ndarray
+
+        Returns:
+            List[Transformation]:
+                The transformation from the base's frame to the end effector.
+        """
+        # 1. Use the exponential to get a Transformation for each joint angle.
+        ...
+
+    def forward_kinematics(self, joint_angles: np.ndarray, home_position: Transformation) -> Transformation:
         """Computed the transformation from the base link to the end effector link.
 
         Args:
+            joint_angles: np.ndarray
             home_position: Transformation
                 The pose of the end effector when all the joint angles are zero.
 
@@ -30,10 +45,8 @@ class KinematicOpenChain:
                 The transformation from the base link to the end effector link.
         """
 
-        left = Transformation.identity()
-        for transformation in self.transformations:
-            left = left * transformation
-        return left * home_position
+        transformations = self.transformations(joint_angles) + [home_position]
+        return self.multiply(transformations)
 
     def inverse_kinematics(self, desired_base_to_ee: Transformation) -> np.ndarray:
         """..."""
@@ -58,11 +71,13 @@ class KinematicOpenChain:
         num_columns = 6
         jacobian = np.zeros((num_rows, num_columns))
 
+        base_to_ee =
+
         # Compute the forward kinematics at these joint angles.
         # Alter each joint angle slightly to compute the derivative.
         # Need to be able to extract the (roll, pitch, yaw) from the transformation.
-
         for row_index in range(num_rows):
+
 
 
         return jacobian

@@ -85,7 +85,7 @@ def test_extracting_euler_angles_from_transformation(transformation, expected_an
     roll, pitch, yaw = transformation.euler_angles()
 
     assert np.isclose(roll, expected_angles[0], atol=1e-5)
-    #assert np.isclose(pitch, expected_angles[1], atol=1e-5)
-    #assert np.isclose(yaw, expected_angles[2], atol=1e-5)
+    assert np.isclose(pitch, expected_angles[1], atol=1e-5)
+    assert np.isclose(yaw, expected_angles[2], atol=1e-5)
 
 

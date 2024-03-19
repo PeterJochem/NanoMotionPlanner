@@ -103,3 +103,34 @@ def euler_angles(matrix) -> np.ndarray:
     gamma = -math.atan2(y, x)
 
     return gamma, beta, alpha
+
+
+def little_so3(v: np.ndarray) -> np.ndarray:
+    """Constructs the so(3) matrix of the provided 3 vector.
+
+    Notes:
+        https://hades.mech.northwestern.edu/images/7/7f/MR.pdf
+
+    Args:
+        v: numpy.ndarray
+            3 vector.
+
+    Returns:
+        numpy.ndarray:
+            so(3) representation of v.
+    """
+    matrix = np.zeros((3, 3))
+
+    # First Row
+    matrix[0][1] = -v[2]
+    matrix[0][2] = -v[1]
+
+    # Second Row
+    matrix[1][0] = v[0]
+    matrix[1][2] = -v[0]
+
+    # Third Row
+    matrix[2][0] = -v[1]
+    matrix[2][1] = v[0]
+
+    return matrix

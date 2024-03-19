@@ -79,6 +79,9 @@ def construct_matrix(x: float, y: float, z: float, roll: float, pitch: float, ya
 def euler_angles(matrix) -> np.ndarray:
     """Extracts the Euler angles (XYZ convention).
 
+        Notes:
+            https://msl.cs.uiuc.edu/planning/node103.html
+
     Args:
         matrix: numpy.ndarray
 

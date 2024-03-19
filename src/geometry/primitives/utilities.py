@@ -76,57 +76,6 @@ def construct_matrix(x: float, y: float, z: float, roll: float, pitch: float, ya
     return matrix
 
 
-def euler_angles_50(matrix: np.ndarray) -> np.ndarray:
-    """
-
-    Notes:
-        https://msl.cs.uiuc.edu/planning/node103.html
-        https://mecharithm.com/learning/lesson/explicit-representations-orientation-robotics-roll-pitch-yaw-angles-15
-    """
-
-    cos_beta = -math.sqrt((matrix[0][0] ** 2) + (matrix[1][0] ** 2))
-
-    x = cos_beta
-    y = -matrix[2][0]
-    pitch = -math.atan2(y, x)
-
-    x = matrix[0][0] / cos_beta
-    y = matrix[1][0] / cos_beta
-    yaw = -math.atan2(y, x)
-
-    x = matrix[2][2] / cos_beta
-    y = matrix[2][1] / cos_beta
-    roll = -math.atan2(y, x)
-    a = np.array([roll, pitch, yaw])
-    breakpoint()
-    return np.array([roll, pitch, yaw])
-
-
-def euler_angles__(matrix: np.ndarray) -> np.ndarray:
-    """
-
-    Notes:
-        https://msl.cs.uiuc.edu/planning/node103.html
-        https://mecharithm.com/learning/lesson/explicit-representations-orientation-robotics-roll-pitch-yaw-angles-15
-    """
-
-    matrix = matrix.T
-
-    x = matrix[2][2]
-    y = -matrix[1][2]
-    roll = math.atan2(y, x)
-
-    pitch = math.asin(matrix[0][2])
-
-    x = matrix[0][1]
-    y = matrix[0][0]
-    yaw = -math.atan2(x, y)
-
-    a = roll, pitch, yaw
-    # breakpoint()
-
-    return roll, pitch, yaw
-
 def euler_angles(matrix):
     """
     Convert a 3x3 rotation matrix into Euler angles (XYZ convention).
@@ -151,4 +100,3 @@ def euler_angles(matrix):
     gamma = -math.atan2(y, x)
 
     return gamma, beta, alpha
-

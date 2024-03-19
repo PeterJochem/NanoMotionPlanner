@@ -76,15 +76,15 @@ def construct_matrix(x: float, y: float, z: float, roll: float, pitch: float, ya
     return matrix
 
 
-def euler_angles(matrix):
-    """
-    Convert a 3x3 rotation matrix into Euler angles (XYZ convention).
+def euler_angles(matrix) -> np.ndarray:
+    """Extracts the Euler angles (XYZ convention).
 
     Args:
-        R: 3x3 rotation matrix
+        matrix: numpy.ndarray
 
     Returns:
-        Tuple containing Euler angles (α, β, γ) in radians
+        numpy.ndarray:
+            Euler angles (roll, pitch, yaw).
     """
 
     y = matrix[1][0]

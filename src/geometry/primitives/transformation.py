@@ -1,5 +1,5 @@
 import numpy as np
-from geometry.primitives.utilities import construct_matrix
+from geometry.primitives.utilities import construct_matrix, euler_angles
 
 
 class Transformation:
@@ -14,6 +14,42 @@ class Transformation:
             The (4, 4) transformation matrix.
         """
         self.matrix = matrix
+
+    def euler_angles(self) -> np.ndarray:
+        """Gets the underlying Euler angles.
+
+        Returns:
+            numpy.ndarray:
+                [roll, pitch, yaw] (in radians)
+        """
+        return euler_angles(self.matrix)
+
+    def roll(self) -> float:
+        """Gets the rotation about the x-axis, in radians.
+
+        Returns:
+            float:
+                The rotation about the x-axis, in radians.
+        """
+        return self.euler_angles()[0]
+
+    def pitch(self) -> float:
+        """Gets the rotation about the y-axis, in radians.
+
+        Returns:
+            float:
+                The rotation about the y-axis, in radians.
+        """
+        return self.euler_angles()[1]
+
+    def yaw(self) -> float:
+        """Gets the rotation about the z-axis, in radians.
+
+        Returns:
+            float:
+                The rotation about the z-axis, in radians.
+        """
+        return self.euler_angles()[2]
 
     def transform(self, right: "Transformation") -> "Transformation":
         """Computes the product of this transformation and the provided one.
@@ -42,7 +78,6 @@ class Transformation:
         homogenous_point = np.array([x, y, z, 1.])
         transformed_homogenous_point = self.matrix @ homogenous_point
         return transformed_homogenous_point[0:3]
-
 
     def __mul__(self, right: "Transformation") -> "Transformation":
         """Defines the behavior of the * operator.

@@ -42,7 +42,8 @@ def rotation_matrix(roll: float, pitch: float, yaw: float) -> np.ndarray:
     Rz[1][1] = math.cos(yaw)
     Rz[2][2] = 1.
 
-    return Rx @ Ry @ Rz
+    return (Rx @ Ry @ Rz).T
+    #return (Rz @ Ry @ Rx).T
 
 
 def construct_matrix(x: float, y: float, z: float, roll: float, pitch: float, yaw: float) -> np.ndarray:
@@ -73,3 +74,81 @@ def construct_matrix(x: float, y: float, z: float, roll: float, pitch: float, ya
     matrix[2][3] = z
     matrix[3][3] = 1.
     return matrix
+
+
+def euler_angles_50(matrix: np.ndarray) -> np.ndarray:
+    """
+
+    Notes:
+        https://msl.cs.uiuc.edu/planning/node103.html
+        https://mecharithm.com/learning/lesson/explicit-representations-orientation-robotics-roll-pitch-yaw-angles-15
+    """
+
+    cos_beta = -math.sqrt((matrix[0][0] ** 2) + (matrix[1][0] ** 2))
+
+    x = cos_beta
+    y = -matrix[2][0]
+    pitch = -math.atan2(y, x)
+
+    x = matrix[0][0] / cos_beta
+    y = matrix[1][0] / cos_beta
+    yaw = -math.atan2(y, x)
+
+    x = matrix[2][2] / cos_beta
+    y = matrix[2][1] / cos_beta
+    roll = -math.atan2(y, x)
+    a = np.array([roll, pitch, yaw])
+    breakpoint()
+    return np.array([roll, pitch, yaw])
+
+
+def euler_angles__(matrix: np.ndarray) -> np.ndarray:
+    """
+
+    Notes:
+        https://msl.cs.uiuc.edu/planning/node103.html
+        https://mecharithm.com/learning/lesson/explicit-representations-orientation-robotics-roll-pitch-yaw-angles-15
+    """
+
+    matrix = matrix.T
+
+    x = matrix[2][2]
+    y = -matrix[1][2]
+    roll = math.atan2(y, x)
+
+    pitch = math.asin(matrix[0][2])
+
+    x = matrix[0][1]
+    y = matrix[0][0]
+    yaw = -math.atan2(x, y)
+
+    a = roll, pitch, yaw
+    # breakpoint()
+
+    return roll, pitch, yaw
+
+def euler_angles(matrix):
+    """
+    Convert a 3x3 rotation matrix into Euler angles (XYZ convention).
+
+    Args:
+        R: 3x3 rotation matrix
+
+    Returns:
+        Tuple containing Euler angles (α, β, γ) in radians
+    """
+
+    y = matrix[1][0]
+    x = matrix[0][0]
+    alpha = -math.atan2(y, x)
+
+    y = -matrix[2][0]
+    x = math.sqrt((matrix[2][1] ** 2) + (matrix[2][2] ** 2))
+    beta = -math.atan2(y, x)
+
+    y = matrix[2][1]
+    x = matrix[2][2]
+    gamma = -math.atan2(y, x)
+
+    return gamma, beta, alpha
+

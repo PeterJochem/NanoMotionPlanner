@@ -1,5 +1,4 @@
 import numpy as np
-
 from geometry.primitives.transformation import Transformation
 from geometry.primitives.utilities import little_so3
 
@@ -49,7 +48,8 @@ class Screw:
 
     def bracket_s(self) -> np.ndarray:
         """..."""
-        return little_so3(self.as_6_vector())
+        ...
+        # return little_so3(self.as_6_vector())
 
     def rotation_matrix(self, theta: float) -> np.ndarray:
         """Computes the rotation matrix transformation matrix corresponding to rotating by theta radians
@@ -83,7 +83,7 @@ class Screw:
             numpy.ndarray:
                 [x, y, z]
         """
-        matrix = np.eye(3)
+        matrix = np.eye(3) * theta
 
         bracket_w = little_so3(self.w)
         bracket_w_squared = bracket_w @ bracket_w
@@ -113,4 +113,4 @@ class Screw:
         matrix[1][3] = y
         matrix[2][3] = z
 
-        return matrix
+        return Transformation(matrix)

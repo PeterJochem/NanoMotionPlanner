@@ -123,10 +123,10 @@ def little_so3(v: np.ndarray) -> np.ndarray:
 
     # First Row
     matrix[0][1] = -v[2]
-    matrix[0][2] = -v[1]
+    matrix[0][2] = v[1]
 
     # Second Row
-    matrix[1][0] = v[0]
+    matrix[1][0] = v[2]
     matrix[1][2] = -v[0]
 
     # Third Row

@@ -98,7 +98,7 @@ def define_ur5_kinematic_chain() -> KinematicOpenChain:
     screw5 = Screw(w5, v5)
     screw6 = Screw(w6, v6)
     screws = [screw1, screw2, screw3, screw4, screw5, screw6]
-    return KinematicOpenChain(screws)
+    return KinematicOpenChain(screws, define_ur5_home_transformation())
 
 
 # See page 147 of Modern Robotics.
@@ -122,5 +122,5 @@ def test_forward_kinematics(kinematic_chain: KinematicOpenChain,
                             joint_angles: np.ndarray,
                             expected_transformation: Transformation):
 
-    transformation = kinematic_chain.forward_kinematics(joint_angles, define_ur5_home_transformation())
+    transformation = kinematic_chain.forward_kinematics(joint_angles)
     assert np.allclose(transformation.matrix, expected_transformation.matrix, atol=1e-5)

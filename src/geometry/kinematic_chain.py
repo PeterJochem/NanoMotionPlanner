@@ -2,6 +2,7 @@ from typing import List
 import numpy as np
 from geometry.primitives.screw import Screw
 from geometry.primitives.transformation import Transformation
+from geometry.utilities import multiply
 
 
 class KinematicOpenChain:
@@ -19,18 +20,17 @@ class KinematicOpenChain:
         self.screws = screws
         self.num_joints = len(screws)
 
-    def transformation(self, joint_angles: np.ndarray) -> Transformation:
+    def transformations(self, joint_angles: np.ndarray) -> List[Transformation]:
         """Computes the transformation from the base to the end effector at the provided joint angles.
 
         Args:
             joint_angles: numpy.ndarray
 
         Returns:
-            Transformation:
-                The transformation from the base's frame to the end effector.
+            List[Transformation]:
+                The transformation for each joint in the open chain.
         """
-        transformations = [screw.transformation(theta) for screw, theta in zip(self.screws, joint_angles)]
-        return self.multiply(transformations)
+        return [screw.transformation(theta) for screw, theta in zip(self.screws, joint_angles)]
 
     def forward_kinematics(self, joint_angles: np.ndarray, home_position: Transformation) -> Transformation:
         """Computes the transformation from the base link to the end effector link.
@@ -46,7 +46,7 @@ class KinematicOpenChain:
         """
 
         transformations = self.transformations(joint_angles) + [home_position]
-        return self.multiply(transformations)
+        return multiply(transformations)
 
     def inverse_kinematics(self, desired_base_to_ee: Transformation) -> np.ndarray:
         """..."""
@@ -71,13 +71,13 @@ class KinematicOpenChain:
         num_columns = 6
         jacobian = np.zeros((num_rows, num_columns))
 
-        base_to_ee =
+        base_to_ee = ...
 
         # Compute the forward kinematics at these joint angles.
         # Alter each joint angle slightly to compute the derivative.
         # Need to be able to extract the (roll, pitch, yaw) from the transformation.
         for row_index in range(num_rows):
-
+            ...
 
 
         return jacobian

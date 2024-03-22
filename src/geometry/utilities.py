@@ -12,7 +12,6 @@ def multiply(transformations: List[Transformation]):
         Transformation:
             The product of all the transformations.
     """
-
     left = Transformation.identity()
     for transformation in transformations:
         left = left * transformation

@@ -64,7 +64,7 @@ normalized_screw_axis_5 = np.array([0., 1., 0., -6., 0., 4.])
                                                         (q5, s5, h5, normalized_screw_axis_5)])
 def test_as_6_vector(q: np.ndarray, s: np.ndarray, h: float, expected_6_vector: np.ndarray):
 
-    screw = Screw(q, s, h)
+    screw = Screw.construct_from_q_s_h(q, s, h)
     assert np.allclose(screw.as_6_vector(), expected_6_vector)
 
 
@@ -75,7 +75,7 @@ def test_as_6_vector(q: np.ndarray, s: np.ndarray, h: float, expected_6_vector: 
                                                             (q5, s5, h5, 3., normalized_screw_axis_5 * 3.)])
 def test_twist(q: np.ndarray, s: np.ndarray, h: float, theta: float, expected_twist: np.ndarray):
 
-    screw = Screw(q, s, h)
+    screw = Screw.construct_from_q_s_h(q, s, h)
     twist = screw.twist(theta)
     assert np.allclose(twist, expected_twist)
 
@@ -84,12 +84,10 @@ def test_twist(q: np.ndarray, s: np.ndarray, h: float, theta: float, expected_tw
                                                                      (q2, s2, h2, angle_2, transformation_2),
                                                                      (q3, s3, h3, angle_3, transformation_3),
                                                                      (q4, s4, h4, angle_4, transformation_4),
-                                                                     (q5, s5, h5, angle_5, transformation_5
-                                                                      )
-])
+                                                                     (q5, s5, h5, angle_5, transformation_5)])
 def test_transformation(q: np.ndarray, s: np.ndarray, h: float, theta: float, expected_transformation: np.ndarray):
 
-    screw = Screw(q, s, h)
+    screw = Screw.construct_from_q_s_h(q, s, h)
     transformation = screw.transformation(theta)
     assert np.allclose(transformation.matrix, expected_transformation)
 

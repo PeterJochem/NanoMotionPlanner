@@ -6,6 +6,16 @@ from geometry.primitives.transformation import Transformation
 
 
 def mm_to_meters(n: float) -> float:
+    """Converts a length in millimeters to meters.
+
+    Args:
+        n: float
+            Length in millimeters to meters.
+
+    Returns:
+        float:
+            The provided length measured in meters.
+    """
     return n / 1000.
 
 
@@ -22,9 +32,19 @@ class URDimensions:
 
 
 def define_ur5_home_transformation() -> Transformation:
-    """See page 147 of Modern Robotics."""
+    """Defines the transformation from the base to the end effector when a UR5 robot has all zero joint angles.
+
+    Notes:
+        See page 147 of Modern Robotics.
+
+    Returns:
+        Transformation:
+            T_base_ee when a UR5 has all its joints at zero degrees.
+    """
     dimensions = URDimensions()
-    matrix = np.zeros(4)
+
+    matrix = np.zeros((4, 4), dtype=float)
+
     # Set the rotation components.
     matrix[0][0] = -1.
     matrix[1][2] = 1.
@@ -42,7 +62,15 @@ def define_ur5_home_transformation() -> Transformation:
 
 
 def define_ur5_kinematic_chain() -> KinematicOpenChain:
-    """See page 146 of Modern Robotics."""
+    """Defines a kinematic chain for the UR5 robot.
+
+    Notes:
+        See page 146 of Modern Robotics.
+
+    Returns:
+        KinematicOpenChain:
+            The kinematic chain for the UR5 robot.
+    """
     dimensions = URDimensions()
 
     w1 = np.array([0., 0., 1.])
@@ -73,18 +101,26 @@ def define_ur5_kinematic_chain() -> KinematicOpenChain:
     return KinematicOpenChain(screws)
 
 
-
-
-
 # See page 147 of Modern Robotics.
 ur5_kinematic_chain = define_ur5_kinematic_chain()
 
-joint_angles_1 = np.ndarray([0., -np.pi / 2., 0., 0., np.pi / 2., 0.])
-transformation_1 = Transformation()
+joint_angles_1 = np.array([0., -np.pi / 2., 0., 0., np.pi / 2., 0.])
+joint_angles_2 = np.array([0., 0., 0., 0., 0., 0.])
 
+transformation_matrix_1 = np.array([[0., -1., 0., 0.095],
+                                    [1., 0., 0., 0.109],
+                                    [0., 0., 1., 0.988],
+                                    [0., 0., 0., 1.]])
+transformation_1 = Transformation(transformation_matrix_1)
 ur5_case_1 = (ur5_kinematic_chain, joint_angles_1, transformation_1)
 
+ur5_case_2 = (ur5_kinematic_chain, joint_angles_2, define_ur5_home_transformation())
 
-@pytest.mark.parametrize("chain, joint_angles, expected_transformation", [ur5_case_1, ])
-def test_forward_kinematics():
-    assert 1 == 2
+
+@pytest.mark.parametrize("kinematic_chain, joint_angles, expected_transformation", [ur5_case_1, ur5_case_2])
+def test_forward_kinematics(kinematic_chain: KinematicOpenChain,
+                            joint_angles: np.ndarray,
+                            expected_transformation: Transformation):
+
+    transformation = kinematic_chain.forward_kinematics(joint_angles, define_ur5_home_transformation())
+    assert np.allclose(transformation.matrix, expected_transformation.matrix, atol=1e-5)

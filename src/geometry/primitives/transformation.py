@@ -1,5 +1,6 @@
 import numpy as np
 from geometry.primitives.utilities import construct_matrix, euler_angles
+from utilities import row_to_string
 
 
 class Transformation:
@@ -94,6 +95,16 @@ class Transformation:
             return Transformation(self.matrix @ right.matrix)
         else:
             raise TypeError(f"Unsupported operand type(s) for *: {type(self).__name__} and {type(right).__name__}")
+
+    def __str__(self) -> str:
+        string = "["
+        string += row_to_string(self.matrix[0]) + '\n'
+        string += row_to_string(self.matrix[1]) + '\n'
+        string += row_to_string(self.matrix[2]) + '\n'
+        string += row_to_string(self.matrix[3])
+        string += "]"
+        return string
+
 
     @staticmethod
     def construct(x: float, y: float, z: float, roll: float, pitch: float, yaw: float) -> "Transformation":

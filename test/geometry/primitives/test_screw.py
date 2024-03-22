@@ -84,7 +84,8 @@ def test_twist(q: np.ndarray, s: np.ndarray, h: float, theta: float, expected_tw
                                                                      (q2, s2, h2, angle_2, transformation_2),
                                                                      (q3, s3, h3, angle_3, transformation_3),
                                                                      (q4, s4, h4, angle_4, transformation_4),
-                                                                     (q5, s5, h5, angle_5, transformation_5)
+                                                                     (q5, s5, h5, angle_5, transformation_5
+                                                                      )
 ])
 def test_transformation(q: np.ndarray, s: np.ndarray, h: float, theta: float, expected_transformation: np.ndarray):
 

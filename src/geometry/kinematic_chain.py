@@ -19,24 +19,24 @@ class KinematicOpenChain:
         self.screws = screws
         self.num_joints = len(screws)
 
-    def transformations(self, joint_angles: np.ndarray) -> List[Transformation]:
-        """...
+    def transformation(self, joint_angles: np.ndarray) -> Transformation:
+        """Computes the transformation from the base to the end effector at the provided joint angles.
 
         Args:
-            joint_angles: np.ndarray
+            joint_angles: numpy.ndarray
 
         Returns:
-            List[Transformation]:
+            Transformation:
                 The transformation from the base's frame to the end effector.
         """
-        # 1. Use the exponential to get a Transformation for each joint angle.
-        ...
+        transformations = [screw.transformation(theta) for screw, theta in zip(self.screws, joint_angles)]
+        return self.multiply(transformations)
 
     def forward_kinematics(self, joint_angles: np.ndarray, home_position: Transformation) -> Transformation:
-        """Computed the transformation from the base link to the end effector link.
+        """Computes the transformation from the base link to the end effector link.
 
         Args:
-            joint_angles: np.ndarray
+            joint_angles: numpy.ndarray
             home_position: Transformation
                 The pose of the end effector when all the joint angles are zero.
 

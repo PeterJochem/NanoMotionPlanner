@@ -9,25 +9,40 @@ class Screw:
     See https://hades.mech.northwestern.edu/images/7/7f/MR.pdf page 123.
     """
 
-    def __init__(self, q: np.ndarray, s: np.ndarray, h: float):
+    def __init__(self, w: np.ndarray, v: np.ndarray):
         """Constructor.
 
         Args:
-            q: numpy.ndarray
-                A 3D point on the screw.
-            s: numpy.ndarray
-                Direction of the screw in 3D space.
-            h: float
-                Ratio of the linear velocity along the screw axis to the angular
-                velocity θ̇_dot about the screw axis
+            w: numpy.ndarray
+                Angular velocity (radians/s).
+            v: numpy.ndarray
+                Translational velocity (m/s).
         """
 
-        self.q = q
-        self.s = s
-        self.h = h
+        self.w = w
+        self.v = v
 
-        self.w = self.s
-        self.v = np.cross(-self.s, self.q) + (self.h * self.s)
+    @staticmethod
+    def construct_from_q_s_h(q: np.ndarray, s: np.ndarray, h: float) -> "Screw":
+        """Constructs a Screw from q, s, h.
+
+        Args:
+            q: numpy.ndarray
+                A 3D point on the screw axis.
+            s: numpy.ndarray
+                Defines the direction in 3D space of the screw.
+            h: float
+                The ratio of linear translation along the screw axis to rotation about the screw axis.
+
+        Returns:
+            Screw:
+                Represents the provided matrix.
+        """
+
+        screw = Screw(None, None)
+        screw.w = s
+        screw.v = np.cross(-s, q) + (h * s)
+        return screw
 
     def as_6_vector(self) -> np.ndarray:
         """..."""

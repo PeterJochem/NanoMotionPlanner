@@ -125,15 +125,12 @@ def test_forward_kinematics(kinematic_chain: KinematicOpenChain,
     assert np.allclose(transformation.matrix, expected_transformation.matrix, atol=1e-5)
 
 
-def test_inverse_kinematics():
+def test_inverse_kinematics_from_transformation():
 
     ee_transformation_at_original_joint_angles = ur5_kinematic_chain.forward_kinematics(joint_angles_1)
-    computed_joint_angles = ur5_kinematic_chain.inverse_kinematics(ee_transformation_at_original_joint_angles)
+    computed_joint_angles = ur5_kinematic_chain.inverse_kinematics_from_transformation(ee_transformation_at_original_joint_angles)
     ee_transformation_at_new_joint_angles = ur5_kinematic_chain.forward_kinematics(computed_joint_angles)
 
-    #a = ee_transformation_at_original_joint_angles
-    #b = ee_transformation_at_new_joint_angles
-    #breakpoint()
     assert np.allclose(ee_transformation_at_original_joint_angles.matrix,
                        ee_transformation_at_new_joint_angles.matrix, atol=1e-1)
 

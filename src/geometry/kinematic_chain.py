@@ -64,46 +64,66 @@ class KinematicOpenChain:
         base_to_ee = self.forward_kinematics(joint_angles)
         return pose(base_to_ee)
 
-    def inverse_kinematics(self, desired_base_to_ee: Transformation) -> np.ndarray:
-        """..."""
-        print(desired_base_to_ee)
-        termination_error_magnitude = 1e-5
-        max_num_iterations = 1000  # 10000
-        step_size = 1e-1
+    def inverse_kinematics(self,
+                           desired_base_to_end_effector_pose: np.ndarray,
+                           termination_error_magnitude: float = 1e-1,
+                           max_num_iterations: float = 1000,
+                           step_size: float = 1e-1) -> np.ndarray:
+        """Computes a set of joint angles which makes the end effector have desired transformation in the base frame.
+
+        Args:
+            desired_base_to_end_effector_pose: numpy.ndarray
+            termination_error_magnitude: float
+            max_num_iterations: float
+            step_size: float
+
+        Returns:
+            numpy.ndarray:
+                The joint angles which put the end effector in at the provided transformation in the base frame.
+        """
+
+        current_joint_angles = np.zeros(self.num_joints)
+        current_pose = self.end_effector_pose(current_joint_angles)
+        current_error = np.linalg.norm(current_pose - desired_base_to_end_effector_pose)
 
         current_iteration = 0
-
-        # current_joint_angles = np.zeros(self.num_joints)
-        current_joint_angles = np.array([0.1, 0.2, 0.3, 0.4, 0.5, 0.6])
-        current_pose = self.end_effector_pose(current_joint_angles)
-        desired_pose = pose(desired_base_to_ee)
-
-        current_error = np.linalg.norm(current_pose - desired_pose)
-        history = []
 
         while current_error > termination_error_magnitude:
 
             if current_iteration > max_num_iterations:
-                a = np.round(current_pose, 2)
-                b = np.round(desired_pose, 2)
-                return current_joint_angles
-                #raise RuntimeError("Unable to solve the inverse kinematics problem.")
+                raise RuntimeError("Unable to solve the inverse kinematics problem.")
 
-            delta_theta_direction = self.jacobian(current_joint_angles).T @ (desired_pose - current_pose)
+            pose_delta = desired_base_to_end_effector_pose - current_pose
+            delta_theta_direction = self.jacobian(current_joint_angles).T @ pose_delta
             delta_theta = step_size * current_error * delta_theta_direction / np.linalg.norm(delta_theta_direction)
             current_joint_angles += delta_theta
 
-            # breakpoint()
-            # history.append(current_joint_angles)
-            history.append(current_error)
-
             current_pose = self.end_effector_pose(current_joint_angles)
-            current_error = np.linalg.norm(current_pose - desired_pose)
+            current_error = np.linalg.norm(current_pose - desired_base_to_end_effector_pose)
             current_iteration += 1
-
 
         return current_joint_angles
 
+    def inverse_kinematics_from_transformation(self,
+                                               desired_base_to_ee: Transformation,
+                                               termination_error_magnitude: float = 1e-1,
+                                               max_num_iterations: float = 1000,
+                                               step_size: float = 1e-1) -> np.ndarray:
+        """Computes a set of joint angles which makes the end effector have desired transformation in the base frame.
+
+        Args:
+            desired_base_to_ee: Transformation
+            termination_error_magnitude: float
+            max_num_iterations: float
+            step_size: float
+
+        Returns:
+            numpy.ndarray:
+                The joint angles which put the end effector in at the provided transformation in the base frame.
+        """
+
+        desired_pose = pose(desired_base_to_ee)
+        return self.inverse_kinematics(desired_pose, termination_error_magnitude, max_num_iterations, step_size)
 
     def jacobian(self, joint_angles: np.ndarray) -> np.ndarray:
         """Computes the jacobian at the provided joint angles.

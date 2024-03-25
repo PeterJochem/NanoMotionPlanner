@@ -56,6 +56,7 @@ test_cases += [collision_test_case_2, collision_test_case_3, collision_test_case
               collision_test_case_11, collision_test_case_12, collision_test_case_13,
               collision_test_case_14, collision_test_case_15]
 
+
 @pytest.mark.parametrize("detector, expected", test_cases)
 def test_collision_detector(detector: TriangleTriangleCollisionDetector, expected: bool):
 

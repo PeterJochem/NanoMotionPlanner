@@ -48,13 +48,10 @@ triangle_19 = np.array([[1., 1., 2.2], [3., 1., 1.2], [2., 3., 1.]])
 triangle_20 = np.array([[2., 2., 0.], [4., 2., 5.], [3., 4., 9.]])
 collision_test_case_15 = (TriangleTriangleCollisionDetector(triangle_19, triangle_20), True)
 
-test_cases = []
-test_cases = [collision_test_case_1]
-test_cases += [collision_test_case_2, collision_test_case_3, collision_test_case_4,
-              collision_test_case_5, collision_test_case_6, collision_test_case_7,
-              collision_test_case_8, collision_test_case_9, collision_test_case_10,
-              collision_test_case_11, collision_test_case_12, collision_test_case_13,
-              collision_test_case_14, collision_test_case_15]
+test_cases = [collision_test_case_1, collision_test_case_2, collision_test_case_3, collision_test_case_4,
+              collision_test_case_5, collision_test_case_6, collision_test_case_7, collision_test_case_8,
+              collision_test_case_9, collision_test_case_10, collision_test_case_11, collision_test_case_12,
+              collision_test_case_13, collision_test_case_14, collision_test_case_15]
 
 
 @pytest.mark.parametrize("detector, expected", test_cases)

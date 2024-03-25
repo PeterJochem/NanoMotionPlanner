@@ -1,6 +1,6 @@
 import numpy as np
-
-from geometry.collision_detection.utilities import same_sign, intersection_of_a_line_and_a_plane
+from geometry.collision_detection.utilities import same_sign, intersection_of_a_line_and_a_plane, num_zero, \
+    indices_of_zeros
 from geometry.primitives.interval import Interval
 from geometry.primitives.plane_equation import PlaneEquation
 
@@ -11,6 +11,7 @@ class TriangleTriangleCollisionDetector:
     Implements the algorithm detailed here:
         https://fileadmin.cs.lth.se/cs/Personal/Tomas_Akenine-Moller/code/tritri_tam.pdf
     """
+
     def __init__(self, triangle_1: np.ndarray, triangle_2: np.ndarray):
         """Constructor.
 
@@ -56,7 +57,11 @@ class TriangleTriangleCollisionDetector:
             separated_points[0] = points[1]
             separated_points[1] = points[2]
             separated_points[2] = points[0]
+            #elif num_zero([point_1_distance, point_2_distance, point_3_distance]) == 1:
+            #    idx = indices_of_zeros([point_1_distance, point_2_distance, point_3_distance])
+            #   Edge case where one or more points lie in the plane.
         else:
+            breakpoint()
             raise RuntimeError("All the points share the same sign or all are zero.")
 
         return separated_points
@@ -71,28 +76,41 @@ class TriangleTriangleCollisionDetector:
         if self.triangle_1_plane_equation.all_vertices_lie_on_one_side_of_plane(self.triangle_2):
             return False
 
-        plane_2_triangle_1_separated_points = self.seperate_points_by_signed_distance(self.triangle_1,
-                                                                                      self.triangle_2_plane_equation)
-        plane_1_triangle_2_separated_points = self.seperate_points_by_signed_distance(self.triangle_2,
-                                                                                      self.triangle_1_plane_equation)
+        triangle_1_separated_points = self.seperate_points_by_signed_distance(self.triangle_1,
+                                                                              self.triangle_2_plane_equation)
+        triangle_2_separated_points = self.seperate_points_by_signed_distance(self.triangle_2,
+                                                                              self.triangle_1_plane_equation)
 
         # Calculate the two locations where triangle 1 intersects plane 2.
-        t1 = intersection_of_a_line_and_a_plane(plane_2_triangle_1_separated_points[0],
-                                                plane_2_triangle_1_separated_points[2],
-                                                self.triangle_2_plane_equation)
+        intersection_point_1 = intersection_of_a_line_and_a_plane(triangle_1_separated_points[0],
+                                                                  triangle_1_separated_points[2],
+                                                                  self.triangle_2_plane_equation)
 
-        t2 = intersection_of_a_line_and_a_plane(plane_2_triangle_1_separated_points[1],
-                                                plane_2_triangle_1_separated_points[2],
-                                                self.triangle_2_plane_equation)
+        intersection_point_2 = intersection_of_a_line_and_a_plane(triangle_1_separated_points[1],
+                                                                  triangle_1_separated_points[2],
+                                                                  self.triangle_2_plane_equation)
+
+        direction = np.cross(self.triangle_1_plane_equation.n, self.triangle_2_plane_equation.n)
+        # line(T) = zero_point_on_line + (D * T)
+        # intersection_point_2 - zero_point_on_line = D * T
+        # We know the ^ point is on the line +- floating point rounding.
+        # T is a scalar. We have three linear equations in T. We know they are satisfiable +- floating point rounding.
+        # Use just the equation in x to solve for T.
+
+        t1 = 0.
+        t2 = (intersection_point_2[0] - intersection_point_1[0]) / direction[0]
 
         # Calculate the two locations where triangle 2 intersects plane 1.
-        t3 = intersection_of_a_line_and_a_plane(plane_1_triangle_2_separated_points[0],
-                                                plane_1_triangle_2_separated_points[2],
-                                                self.triangle_1_plane_equation)
+        intersection_point_3 = intersection_of_a_line_and_a_plane(triangle_2_separated_points[0],
+                                                                  triangle_2_separated_points[2],
+                                                                  self.triangle_1_plane_equation)
 
-        t4 = intersection_of_a_line_and_a_plane(plane_1_triangle_2_separated_points[1],
-                                                plane_1_triangle_2_separated_points[2],
-                                                self.triangle_1_plane_equation)
+        intersection_point_4 = intersection_of_a_line_and_a_plane(triangle_2_separated_points[1],
+                                                                  triangle_2_separated_points[2],
+                                                                  self.triangle_1_plane_equation)
+
+        t3 = (intersection_point_3[0] - intersection_point_1[0]) / direction[0]
+        t4 = (intersection_point_4[0] - intersection_point_1[0]) / direction[0]
 
         interval_1 = Interval(t1, t2)
         interval_2 = Interval(t3, t4)

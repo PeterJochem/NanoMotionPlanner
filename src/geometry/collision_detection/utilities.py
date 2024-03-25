@@ -1,5 +1,5 @@
 import numpy as np
-from typing import Optional
+from typing import Optional, List
 
 
 def normal_to_points_in_plane(points: np.ndarray) -> np.ndarray:
@@ -42,10 +42,30 @@ def same_sign(a: float, b: float) -> bool:
     return (a > 0. and b > 0.) or (a < 0. and b < 0.)
 
 
+def num_zero(nums: np.ndarray) -> int:
+    """Gets the number of entries in the array which are approximately 0.
+
+    Returns:
+        int:
+            The number of entries in the array which are approximately 0.
+    """
+    return len([num for num in nums if approximately_equal(num, 0.)])
+
+
+def indices_of_zeros(nums: np.ndarray) -> List[int]:
+    """Gets the ...
+
+    Returns:
+        List[int]:
+            ...
+    """
+    return [i for i in range(len(nums)) if approximately_equal(nums[i], 0.)]
+
+
 def intersection_of_a_line_and_a_plane(point_1: np.ndarray,
                                        point_2: np.ndarray,
-                                       plane: "PlaneEquation") -> Optional[float]:
-    """Computes the intersection of a line formed by two points and a plane in terms of the location on the line.
+                                       plane: "PlaneEquation") -> Optional[np.ndarray]:
+    """Computes the intersection of a line segment formed by two points and a plane.
 
     Notes:
         Let the line be parameterized by a point and a direction.
@@ -61,14 +81,16 @@ def intersection_of_a_line_and_a_plane(point_1: np.ndarray,
         plane: PlaneEquation
 
     Returns:
-        Optional[float]:
-            Parameter T above. Line(T) = Point + (Direction * T)
+        Optional[numpy.ndarray]:
+            The point of intersection. [x, y, z].
     """
 
     numerator = plane.d + np.dot(point_1, plane.n)
-    denominator = np.dot(point_2 - point_1, plane.n)
+    denominator = np.dot(point_1 - point_2, plane.n)
 
     if approximately_equal(denominator, 0.):
         return None
 
-    return numerator / denominator
+    t = numerator / denominator
+    direction = (point_2 - point_1)
+    return point_1 + (direction * t)

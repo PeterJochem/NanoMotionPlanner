@@ -22,7 +22,8 @@ class Interval:
             num: float
 
         Returns:
-            True iff the provided number lies in this interval.
+            bool:
+                True iff the provided number lies in this interval.
         """
         return self.smaller <= num <= self.larger
 

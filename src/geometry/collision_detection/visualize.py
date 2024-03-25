@@ -9,31 +9,16 @@ def plot_triangle(ax, vertices, color='b'):
 
 
 
-# Define vertices of the triangles
-triangle1_vertices = [
-    [1, 1, 1],  # A
-    [3, 1, 1],  # B
-    [2, 3, 1]   # C
-]
+triangle_1 = np.array([[1., 1., 1.], [3., 1., 1.], [2., 3., 1.]])
+triangle_2 = np.array([[2., 2., 0.], [4., 2., 0.], [3., 4., 0.]])
 
-triangle2_vertices = [
-    [2, 2, 2],  # D
-    [4, 2, 2],  # E
-    [3, 4, 2]   # F
-]
-
-triangle1_vertices = np.array([[0., 0., 0.], [0., 0., 1.], [0., 1., 0.]])
-triangle2_vertices = np.array([[0., 2., 0.], [0., 2., 1.], [0., 2. + 1., 0.]])
-
-triangle1_vertices = np.array([[0., 0., 0.], [0., 0., 1.], [0., 1., 0.]])
-triangle2_vertices = np.array([[1., 2., 0.], [2., 2., 1.], [3., 2. + 1., 0.]])
 
 fig = plt.figure()
 ax = fig.add_subplot(111, projection='3d')
 
 # Plot the triangles
-plot_triangle(ax, triangle1_vertices, color='b')
-plot_triangle(ax, triangle2_vertices, color='r')
+plot_triangle(ax, triangle_1, color='b')
+plot_triangle(ax, triangle_2, color='r')
 
 # Set labels
 ax.set_xlabel('X')

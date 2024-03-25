@@ -7,7 +7,6 @@ triangle_1 = np.array([[0., 0., 0.], [0., 0., 1.], [0., 1., 0.]])
 triangle_2 = np.array([[0., 2., 0.], [0., 2., 1.], [0., 2. + 1., 0.]])
 collision_test_case_1 = (TriangleTriangleCollisionDetector(triangle_1, triangle_2), False)
 
-
 triangle_3 = np.array([[0., 0., 0.], [0., 0., 1.], [0., 1., 0.]])
 triangle_4 = np.array([[1., 2., 0.], [2., 2., 1.], [3., 2. + 1., 0.]])
 collision_test_case_2 = (TriangleTriangleCollisionDetector(triangle_3, triangle_4), False)
@@ -25,12 +24,10 @@ triangle_10 = np.array([[0., 2., 0.], [4., 2., 2.2], [3., 4., 2.]])
 collision_test_case_5 = (TriangleTriangleCollisionDetector(triangle_9, triangle_10), True)
 collision_test_case_6 = (TriangleTriangleCollisionDetector(triangle_10, triangle_9), True)
 
-
 triangle_11 = np.array([[1., 1., 1.], [3., 1., 1.], [2., 3., 1.]])
 triangle_12 = np.array([[0., 1.5, -1.], [5., 1.5, 3.], [4., 3., 5.]])
 collision_test_case_7 = (TriangleTriangleCollisionDetector(triangle_11, triangle_12), True)
 collision_test_case_8 = (TriangleTriangleCollisionDetector(triangle_12, triangle_11), True)
-
 
 triangle_13 = np.array([[1., 1., 1.], [3., 1., 1.], [2., 3., 1.]])
 triangle_14 = np.array([[2., 2., 0.], [4., 2., 0.], [3., 4., 0.]])
@@ -41,7 +38,6 @@ triangle_15 = np.array([[1., 1., 1.], [3., 1., 1.], [2., 3., 1.]])
 triangle_16 = np.array([[2., 2., 0.], [4., 2., 0.], [3., 4., 0.]])
 collision_test_case_11 = (TriangleTriangleCollisionDetector(triangle_15, triangle_16), False)
 collision_test_case_12 = (TriangleTriangleCollisionDetector(triangle_16, triangle_15), False)
-
 
 triangle_17 = np.array([[1., 1., 2.2], [3., 1., 1.2], [2., 3., 1.]])
 triangle_18 = np.array([[2., 2., 0.], [4., 2., 0.], [3., 4., 0.]])
@@ -60,14 +56,7 @@ test_cases += [collision_test_case_2, collision_test_case_3, collision_test_case
               collision_test_case_11, collision_test_case_12, collision_test_case_13,
               collision_test_case_14, collision_test_case_15]
 
-#test_cases = [collision_test_case_7]
-
-
 @pytest.mark.parametrize("detector, expected", test_cases)
 def test_collision_detector(detector: TriangleTriangleCollisionDetector, expected: bool):
 
     assert detector.detect() == expected
-
-
-
-

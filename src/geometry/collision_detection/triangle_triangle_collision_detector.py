@@ -1,6 +1,5 @@
 import numpy as np
-from geometry.collision_detection.utilities import same_sign, intersection_of_a_line_and_a_plane, num_zero, \
-    indices_of_zeros
+from geometry.collision_detection.utilities import same_sign, intersection_of_a_line_and_a_plane, num_zero
 from geometry.primitives.interval import Interval
 from geometry.primitives.plane_equation import PlaneEquation
 

@@ -27,6 +27,17 @@ class TriangleTriangleCollisionDetector:
         self.triangle_1_plane_equation = PlaneEquation(triangle_1)
         self.triangle_2_plane_equation = PlaneEquation(triangle_2)
 
+    def triangles_lie_in_the_same_plane(self) -> bool:
+        """Checks if the two triangles lie in the same plane.
+
+        Returns:
+            bool:
+                True iff the two triangles lie in the same plane.
+        """
+
+        distances = self.triangle_1_plane_equation.signed_distances(self.triangle_2)
+        return num_zero(distances) == 3
+
     def seperate_points_by_signed_distance(self, points: np.ndarray, plane: PlaneEquation) -> np.ndarray:
         """Separates the points based on which side of the plane they lie on.
 
@@ -75,6 +86,8 @@ class TriangleTriangleCollisionDetector:
         """
         if self.triangle_1_plane_equation.all_vertices_lie_on_one_side_of_plane(self.triangle_2):
             return False
+        elif self.triangles_lie_in_the_same_plane():
+            return False  # Very rare edge case that should be handled properly.
 
         triangle_1_separated_points = self.seperate_points_by_signed_distance(self.triangle_1,
                                                                               self.triangle_2_plane_equation)

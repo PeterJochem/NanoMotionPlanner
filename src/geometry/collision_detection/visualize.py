@@ -9,8 +9,8 @@ def plot_triangle(ax, vertices, color='b'):
 
 
 
-triangle_1 = np.array([[1., 1., 1.], [3., 1., 1.], [2., 3., 1.]])
-triangle_2 = np.array([[2., 2., 0.], [4., 2., 0.], [3., 4., 0.]])
+triangle_1 = np.array([[1., 1., 2.2], [3., 1., 1.2], [2., 3., 1.]])
+triangle_2 = np.array([[2., 2., 0.], [4., 2., 5.], [3., 4., 9.]])
 
 
 fig = plt.figure()

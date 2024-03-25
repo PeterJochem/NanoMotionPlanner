@@ -39,14 +39,27 @@ collision_test_case_10 = (TriangleTriangleCollisionDetector(triangle_14, triangl
 
 triangle_15 = np.array([[1., 1., 1.], [3., 1., 1.], [2., 3., 1.]])
 triangle_16 = np.array([[2., 2., 0.], [4., 2., 0.], [3., 4., 0.]])
-collision_test_case_11 = (TriangleTriangleCollisionDetector(triangle_13, triangle_14), False)
+collision_test_case_11 = (TriangleTriangleCollisionDetector(triangle_15, triangle_16), False)
+collision_test_case_12 = (TriangleTriangleCollisionDetector(triangle_16, triangle_15), False)
 
 
-test_cases = [collision_test_case_2, collision_test_case_3, collision_test_case_4,
+triangle_17 = np.array([[1., 1., 2.2], [3., 1., 1.2], [2., 3., 1.]])
+triangle_18 = np.array([[2., 2., 0.], [4., 2., 0.], [3., 4., 0.]])
+collision_test_case_13 = (TriangleTriangleCollisionDetector(triangle_17, triangle_18), False)
+collision_test_case_14 = (TriangleTriangleCollisionDetector(triangle_18, triangle_17), False)
+
+triangle_19 = np.array([[1., 1., 2.2], [3., 1., 1.2], [2., 3., 1.]])
+triangle_20 = np.array([[2., 2., 0.], [4., 2., 5.], [3., 4., 9.]])
+collision_test_case_15 = (TriangleTriangleCollisionDetector(triangle_19, triangle_20), True)
+
+test_cases = []
+test_cases = [collision_test_case_1]
+test_cases += [collision_test_case_2, collision_test_case_3, collision_test_case_4,
               collision_test_case_5, collision_test_case_6, collision_test_case_7,
               collision_test_case_8, collision_test_case_9, collision_test_case_10,
-              collision_test_case_11]
-#test_cases = [collision_test_case_5, collision_test_case_6]
+              collision_test_case_11, collision_test_case_12, collision_test_case_13,
+              collision_test_case_14, collision_test_case_15]
+
 #test_cases = [collision_test_case_7]
 
 

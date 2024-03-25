@@ -1,58 +1,8 @@
 import numpy as np
-from geometry.collision_detection.utilities import normal_to_points_in_plane, approximately_equal
 
-
-class PlaneEquation:
-    """
-    ...
-    Plane: (n * X) + d = 0, where x is a 3 vector.
-    """
-
-    def __init__(self, points: np.ndarray):
-        """Constructor.
-
-        Args:
-            points: numpy.ndarray
-                Represents a triangle. 3 points in 3D space.
-        """
-        self.n = normal_to_points_in_plane(points)
-        self.d = np.dot(-1 * self.n, points[0])
-
-    def signed_distance(self, point: np.ndarray) -> float:
-        """Computes the signed distance from the provided point in 3D space to the plane.
-
-        Args:
-            point: numpy.ndarray
-                Measures the distance from this point to the plane.
-
-        Returns:
-            float:
-                The signed distance from the point to the plane.
-        """
-        return np.dot(self.n, point) + self.d
-
-
-    def all_vertices_lie_on_one_side_of_plane(self, vertices: np.ndarray) -> bool:
-        """..."""
-        distances = self.signed_distances(vertices)
-        all_zero = all([approximately_equal(distance, 0.) for distance in distances])
-        all_positive = all([distance > 0. for distance in distances])
-        all_negative = all([distance < 0. for distance in distances])
-
-        if all_zero:
-            return False # All the points lie in the plane.
-        elif all_positive or all_negative:
-            return True
-        return False
-
-    def signed_distances(self, points: np.ndarray) -> np.ndarray:
-        """..."""
-
-        n = len(points)
-        distances = np.zeros(n)
-        for i, point in enumerate(points):
-            distances[i] = self.signed_distance(point)
-        return distances
+from geometry.collision_detection.utilities import same_sign, intersection_of_a_line_and_a_plane
+from geometry.primitives.interval import Interval
+from geometry.primitives.plane_equation import PlaneEquation
 
 
 class TriangleTriangleCollisionDetector:
@@ -76,6 +26,41 @@ class TriangleTriangleCollisionDetector:
         self.triangle_1_plane_equation = PlaneEquation(triangle_1)
         self.triangle_2_plane_equation = PlaneEquation(triangle_2)
 
+    def seperate_points_by_signed_distance(self, points: np.ndarray, plane: PlaneEquation) -> np.ndarray:
+        """Separates the points based on which side of the plane they lie on.
+
+        Args:
+            points: numpy.ndarray
+            plane: PlaneEquation
+
+        Returns:
+            numpy.ndarray:
+                The first two points are the same side of the plane. The last point is on the other side.
+        """
+
+        separated_points = np.zeros((3, 3))
+
+        point_1_distance = plane.signed_distance(points[0])
+        point_2_distance = plane.signed_distance(points[1])
+        point_3_distance = plane.signed_distance(points[2])
+
+        if same_sign(point_1_distance, point_2_distance):
+            separated_points[0] = points[0]
+            separated_points[1] = points[1]
+            separated_points[2] = points[2]
+        elif same_sign(point_1_distance, point_3_distance):
+            separated_points[0] = points[0]
+            separated_points[1] = points[2]
+            separated_points[2] = points[1]
+        elif same_sign(point_2_distance, point_3_distance):
+            separated_points[0] = points[1]
+            separated_points[1] = points[2]
+            separated_points[2] = points[0]
+        else:
+            raise RuntimeError("All the points share the same sign or all are zero.")
+
+        return separated_points
+
     def detect(self) -> bool:
         """Detects collisions between two triangles in 3D space.
 
@@ -85,3 +70,31 @@ class TriangleTriangleCollisionDetector:
         """
         if self.triangle_1_plane_equation.all_vertices_lie_on_one_side_of_plane(self.triangle_2):
             return False
+
+        plane_2_triangle_1_separated_points = self.seperate_points_by_signed_distance(self.triangle_1,
+                                                                                      self.triangle_2_plane_equation)
+        plane_1_triangle_2_separated_points = self.seperate_points_by_signed_distance(self.triangle_2,
+                                                                                      self.triangle_1_plane_equation)
+
+        # Calculate the two locations where triangle 1 intersects plane 2.
+        t1 = intersection_of_a_line_and_a_plane(plane_2_triangle_1_separated_points[0],
+                                                plane_2_triangle_1_separated_points[2],
+                                                self.triangle_2_plane_equation)
+
+        t2 = intersection_of_a_line_and_a_plane(plane_2_triangle_1_separated_points[1],
+                                                plane_2_triangle_1_separated_points[2],
+                                                self.triangle_2_plane_equation)
+
+        # Calculate the two locations where triangle 2 intersects plane 1.
+        t3 = intersection_of_a_line_and_a_plane(plane_1_triangle_2_separated_points[0],
+                                                plane_1_triangle_2_separated_points[2],
+                                                self.triangle_1_plane_equation)
+
+        t4 = intersection_of_a_line_and_a_plane(plane_1_triangle_2_separated_points[1],
+                                                plane_1_triangle_2_separated_points[2],
+                                                self.triangle_1_plane_equation)
+
+        interval_1 = Interval(t1, t2)
+        interval_2 = Interval(t3, t4)
+
+        return interval_1.intersects(interval_2)

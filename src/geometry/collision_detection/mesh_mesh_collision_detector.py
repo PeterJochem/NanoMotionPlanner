@@ -20,7 +20,8 @@ class MeshMeshCollisionDetector:
         """Detects if there is a collision between the two meshes.
 
         Returns:
-            True iff there is one or more collisions a triangle of one mesh with a triangle of the other mesh.
+            bool:
+                True iff there is a collision between the two meshes.
         """
 
         triangle_idxs = []
@@ -37,10 +38,3 @@ class MeshMeshCollisionDetector:
                 return True
 
         return False
-
-
-
-
-
-
-

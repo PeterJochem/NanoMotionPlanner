@@ -26,15 +26,21 @@ test_case_13 = (Mesh(np.array([triangle_17])), Mesh(np.array([triangle_18])), Fa
 test_case_14 = (Mesh(np.array([triangle_18])), Mesh(np.array([triangle_17])), False)
 test_case_15 = (Mesh(np.array([triangle_19])), Mesh(np.array([triangle_20])), True)
 test_case_16 = (Mesh(np.array([triangle_20])), Mesh(np.array([triangle_19])), True)
+test_case_17 = (Mesh(np.array([triangle_1, triangle_11])), Mesh(np.array([triangle_12])), True)
+test_case_18 = (Mesh(np.array([triangle_1, triangle_19])), Mesh(np.array([triangle_20])), True)
+test_case_19 = (Mesh(np.array([triangle_20])), Mesh(np.array([triangle_1, triangle_19])), True)
+test_case_20 = (Mesh(np.array([triangle_9])), Mesh(np.array([triangle_12, triangle_10])), True)
+test_case_21 = (Mesh(np.array([triangle_12, triangle_10])), Mesh(np.array([triangle_9])), True)
 
 
 mesh_mesh_collision_test_cases = [test_case_1, test_case_2, test_case_3, test_case_4, test_case_5, test_case_6,
                                   test_case_7, test_case_8, test_case_9, test_case_10, test_case_11, test_case_12,
-                                  test_case_13, test_case_14, test_case_15, test_case_16]
+                                  test_case_13, test_case_14, test_case_15, test_case_16, test_case_17, test_case_18,
+                                  test_case_19, test_case_20, test_case_21]
 
 
 @pytest.mark.parametrize("mesh_1, mesh_2, expected", mesh_mesh_collision_test_cases)
-def test_dummy(mesh_1: Mesh, mesh_2: Mesh, expected: bool):
+def test_mesh_mesh_collision_detector(mesh_1: Mesh, mesh_2: Mesh, expected: bool):
 
     detector = MeshMeshCollisionDetector(mesh_1, mesh_2)
     assert detector.detect() == expected

@@ -44,4 +44,3 @@ def test_mesh_mesh_collision_detector(mesh_1: Mesh, mesh_2: Mesh, expected: bool
 
     detector = MeshMeshCollisionDetector(mesh_1, mesh_2)
     assert detector.detect() == expected
-

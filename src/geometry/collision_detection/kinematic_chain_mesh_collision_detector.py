@@ -1,6 +1,5 @@
 from typing import List
 import numpy as np
-
 from geometry.collision_detection.mesh_mesh_collision_detector import MeshMeshCollisionDetector
 from geometry.kinematic_chain import KinematicOpenChain
 from geometry.mesh import Mesh

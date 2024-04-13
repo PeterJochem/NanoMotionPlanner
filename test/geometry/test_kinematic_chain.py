@@ -38,7 +38,7 @@ def test_inverse_kinematics_from_transformation():
     computed_joint_angles = ur5_kinematic_chain.inverse_kinematics_from_transformation(ee_transformation_at_original_joint_angles)
     ee_transformation_at_new_joint_angles = ur5_kinematic_chain.forward_kinematics(computed_joint_angles)
 
-    #assert np.allclose(ee_transformation_at_original_joint_angles.matrix,
-    #                   ee_transformation_at_new_joint_angles.matrix, atol=1e-1)
+    assert np.allclose(ee_transformation_at_original_joint_angles.matrix,
+                       ee_transformation_at_new_joint_angles.matrix, atol=2e-1)
 
 

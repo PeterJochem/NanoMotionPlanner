@@ -1,15 +1,14 @@
 from typing import List
 import pytest
 import numpy as np
+import open3d as o3d
+import open3d as mylib
 from geometry.collision_detection.kinematic_chain_mesh_collision_detector import KinematicChainMeshCollisionDetector
 from geometry.kinematic_chain import KinematicOpenChain
 from geometry.mesh import Mesh
 from geometry.primitives.transformation import Transformation
 from geometry.utilities import multiply
 from robots.ur5 import define_ur5_kinematic_chain, UR5Meshes, UR5ZeroAngleTransformations
-
-import open3d as o3d
-import open3d as mylib
 
 ur5_kinematic_chain = define_ur5_kinematic_chain()
 ur5_meshes = UR5Meshes().ordered_meshes
@@ -30,16 +29,20 @@ def visualize_mesh(vertices, faces):
     # Create Open3D triangle mesh
     mesh = mylib.geometry.TriangleMesh()
     mesh.vertices = mylib.utility.Vector3dVector(vertices)
-    #mesh.triangles = mylib.utility.Vector3iVector(faces)
+
+    faces = np.array([np.array([3 * i, ((3 * i) + 1), ((3 * i) + 2)]) for i in range(len(mesh.vertices))])
+    mesh.triangles = mylib.utility.Vector3iVector(faces)
 
     # Visualize the mesh
-    #mylib.visualization.draw_geometries([mesh])
+    mylib.visualization.draw_geometries([mesh])
 
+    """
     pcd = o3d.geometry.PointCloud()
     pcd.points = mylib.utility.Vector3dVector(vertices)
 
     # Visualize the point cloud
     o3d.visualization.draw_geometries([pcd])
+    """
 
 @pytest.mark.parametrize("kinematic_chain, meshes, joint_angles, expected", kinematic_chain_mesh_collision_test_cases)
 def test_kinematic_chain_mesh_collision_detector(kinematic_chain: KinematicOpenChain,
@@ -62,7 +65,6 @@ def test_dummy():
     link_4_mesh = meshes[3]
     link_5_mesh = meshes[4]
     link_6_mesh = meshes[5]
-
 
     Ts = UR5ZeroAngleTransformations().transformations
 
@@ -111,6 +113,8 @@ def test_dummy():
     robot_vertices = np.array(base_vertices + link_2_vertices)  # + link_3_vertices + link_4_vertices)
     robot_vertices = np.array(base_vertices + link_2_vertices + link_3_vertices + link_4_vertices + link_5_vertices + link_6_vertices)
 
+    # breakpoint()
+
     base_vertices = np.array(base_vertices)
     link_2_vertices = np.array(link_2_vertices)
     link_3_vertices = np.array(link_3_vertices)
@@ -124,8 +128,8 @@ def test_dummy():
 
     robot_mesh_triangles = o3d.utility.Vector3dVector(robot_vertices)
 
-    visualize_mesh(base_mesh_triangles, None)
-    visualize_mesh(link_2_mesh_triangles, None)
+    #visualize_mesh(base_mesh_triangles, None)
+    #visualize_mesh(link_2_mesh_triangles, None)
     visualize_mesh(robot_mesh_triangles, None)
 
 

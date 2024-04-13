@@ -31,7 +31,7 @@ class Mesh:
 
         transformed_triangles = np.copy(self.triangles)
         for i in range(len(self.triangles)):
-            transformed_triangles[i] = transformation.transform_point(self.triangles[i])
+            transformed_triangles[i] = transformation.transform_triangle(self.triangles[i])
         return Mesh(transformed_triangles)
 
     @classmethod

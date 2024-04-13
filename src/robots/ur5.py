@@ -1,3 +1,4 @@
+from typing import List
 import numpy as np
 import os
 from geometry.kinematic_chain import KinematicOpenChain
@@ -20,6 +21,52 @@ def mm_to_meters(n: float) -> float:
     return n / 1000.
 
 
+class UR5ZeroAngleTransformations:
+
+    def __init__(self):
+        # Define the Transformation from one joint to the next.
+        self.root_to_base_link_transformation = Transformation.construct(1.0, 0., 0., 0., 0., 0.)
+        self.base_to_shoulder_link_transformation = Transformation.construct(0., 0., 0., 0., 0., 0.)
+        self.shoulder_upper_arm_link_transformation = Transformation.construct(0., 0., 0., 0., 0., 0.)
+        self.upper_arm_forearm_link_transformation = Transformation.construct(0., 0., 0., 0., 0., 0.)
+        self.forearm_wrist_1_link_transformation = Transformation.construct(0., 0., 0., 0., 0., 0.)
+        self.wrist_1_wrist_2_link_transformation = Transformation.construct(0., 0., 0., 0., 0., 0.)
+        self.wrist_2_wrist_3_link_transformation = Transformation.construct(0., 0., 0., 0., 0., 0.)
+        self.wrist_3_end_effector_link_transformation = Transformation.construct(0., 0.0823, 0., np.pi / 2., 0., 0.)
+
+        # self.zero_angle_transform = Transform(parent_frame, child_frame, x, y, z, roll, pitch, yaw)
+        delta = 0.  # 0.001
+        self.root_to_base_joint_transformation = Transformation.identity()
+        self.base_to_shoulder_joint_transformation = Transformation.construct(0., 0., 0.089159, 0., 0., 0.)
+        self.shoulder_upper_arm_joint_transformation = Transformation.construct(0., 0.13585, 0., 0., np.pi / 2, 0.)
+        self.upper_arm_forearm_joint_transformation = Transformation.construct(0., -0.1197 - delta, 0.425, 0., 0., 0.)
+        self.forearm_wrist_1_joint_transformation = Transformation.construct(0., delta, 0.39225, 0., np.pi / 2., 0.)
+        self.wrist_1_wrist_2_joint_transformation = Transformation.construct(0., 0.093, 0., 0., 0., 0.)
+        self.wrist_2_wrist_3_joint_transformation = Transformation.construct(0., delta, 0.09465, 0., 0., 0.)
+
+        links = [#self.root_to_base_link_transformation,
+                 Transformation.identity(),
+                 self.base_to_shoulder_link_transformation,
+                 self.shoulder_upper_arm_link_transformation,
+                 self.upper_arm_forearm_link_transformation,
+                 self.forearm_wrist_1_link_transformation,
+                 self.wrist_1_wrist_2_link_transformation,
+                 self.wrist_2_wrist_3_link_transformation]
+
+        joints = [self.root_to_base_joint_transformation,
+                  self.base_to_shoulder_joint_transformation,
+                  self.shoulder_upper_arm_joint_transformation,
+                  self.upper_arm_forearm_joint_transformation,
+                  self.forearm_wrist_1_joint_transformation,
+                  self.wrist_1_wrist_2_joint_transformation,
+                  self.wrist_2_wrist_3_joint_transformation]
+
+        self.transformations = []
+        for link_transformation, joint_transformation in zip(links, joints):
+            self.transformations += [link_transformation, joint_transformation]
+        self.transformations += [self.wrist_3_end_effector_link_transformation]
+
+
 class URDimensions:
 
     def __init__(self):
@@ -30,6 +77,7 @@ class URDimensions:
         self.L2 = mm_to_meters(392.)
         self.H1 = mm_to_meters(89.)
         self.H2 = mm_to_meters(95.)
+        self.zero_angle_transformations = UR5ZeroAngleTransformations()
 
 
 class UR5Meshes:
@@ -106,6 +154,19 @@ def define_ur5_home_transformation() -> Transformation:
     return Transformation(matrix)
 
 
+def define_ur5_base_to_end_effector_transformations() -> List[Transformation]:
+    """Defines all the transformations from the base to the end effector when a UR5 robot has all zero joint angles.
+
+    Notes:
+        See page 147 of Modern Robotics.
+
+    Returns:
+        List[Transformation]
+            ...
+    """
+    return URDimensions().zero_angle_transformations.transformations
+
+
 def define_ur5_kinematic_chain() -> KinematicOpenChain:
     """Defines a kinematic chain for the UR5 robot.
 
@@ -143,4 +204,5 @@ def define_ur5_kinematic_chain() -> KinematicOpenChain:
     screw5 = Screw(w5, v5)
     screw6 = Screw(w6, v6)
     screws = [screw1, screw2, screw3, screw4, screw5, screw6]
-    return KinematicOpenChain(screws, define_ur5_home_transformation())
+    # return KinematicOpenChain(screws, define_ur5_home_transformation())
+    return KinematicOpenChain(screws, define_ur5_base_to_end_effector_transformations())

@@ -35,6 +35,8 @@ class KinematicChainMeshCollisionDetector:
         """
 
         joint_to_joint_transformations = self.kinematic_chain.transformations(joint_angles)
+        a = joint_to_joint_transformations
+        breakpoint()
         n = len(self.meshes)
 
         transformed_meshes = [self.meshes[0]]
@@ -44,14 +46,13 @@ class KinematicChainMeshCollisionDetector:
 
         mesh_idx_pairs = []
         for i in range(n):
-            for j in range(n):
-                if i == j:
-                    continue
+            for j in range(i + 1, n):
                 mesh_idx_pairs.append((i, j))
 
         for mesh_1_idx, mesh_2_idx in mesh_idx_pairs:
             detector = MeshMeshCollisionDetector(transformed_meshes[mesh_1_idx], transformed_meshes[mesh_2_idx])
             if detector.detect():
+                breakpoint()
                 return True
 
         return False

@@ -11,17 +11,18 @@ class KinematicOpenChain:
     Represents a kinematic open chain, a series of links joined together.
     """
 
-    def __init__(self, screws: List[Screw], zero_angle_transformation: Transformation):
+    def __init__(self, screws: List[Screw], zero_angle_transformations: List[Transformation]):
         """Constructor.
 
         Args:
             screws: List[Screw]
                 The screw axes for each joint in the kinematic chain.
-            zero_angle_transformation: Transformation
-                The transformation from the robot's base to the end effector when all the joint angles are zero.
+            zero_angle_transformations: List[Transformation]
+                The transformations from each frame on the robot ordered from the base to the end effector when all
+                the joint angles are zero.
         """
         self.screws = screws
-        self.zero_angle_transformation = zero_angle_transformation
+        self.zero_angle_transformations = zero_angle_transformations
         self.num_joints = len(screws)
 
     def transformations(self, joint_angles: np.ndarray) -> List[Transformation]:
@@ -47,7 +48,7 @@ class KinematicOpenChain:
                 The transformation from the base link to the end effector link.
         """
 
-        transformations = self.transformations(joint_angles) + [self.zero_angle_transformation]
+        transformations = self.transformations(joint_angles) + self.zero_angle_transformations
         return multiply(transformations)
 
     def end_effector_pose(self, joint_angles: np.ndarray) -> np.ndarray:
@@ -66,7 +67,7 @@ class KinematicOpenChain:
 
     def inverse_kinematics(self,
                            desired_base_to_end_effector_pose: np.ndarray,
-                           termination_error_magnitude: float = 1e-1,
+                           termination_error_magnitude: float = 1.5e-1,
                            max_num_iterations: float = 1000,
                            step_size: float = 1e-1) -> np.ndarray:
         """Computes a set of joint angles which makes the end effector have desired transformation in the base frame.
@@ -82,6 +83,7 @@ class KinematicOpenChain:
                 The joint angles which put the end effector in at the provided transformation in the base frame.
         """
 
+        history = []
         current_joint_angles = np.zeros(self.num_joints)
         current_pose = self.end_effector_pose(current_joint_angles)
         current_error = np.linalg.norm(current_pose - desired_base_to_end_effector_pose)
@@ -90,7 +92,10 @@ class KinematicOpenChain:
 
         while current_error > termination_error_magnitude:
 
+            history.append(current_error)
+
             if current_iteration > max_num_iterations:
+                breakpoint()
                 raise RuntimeError("Unable to solve the inverse kinematics problem.")
 
             pose_delta = desired_base_to_end_effector_pose - current_pose
@@ -106,7 +111,7 @@ class KinematicOpenChain:
 
     def inverse_kinematics_from_transformation(self,
                                                desired_base_to_ee: Transformation,
-                                               termination_error_magnitude: float = 1e-1,
+                                               termination_error_magnitude: float = 1.5e-1,
                                                max_num_iterations: float = 1000,
                                                step_size: float = 1e-1) -> np.ndarray:
         """Computes a set of joint angles which makes the end effector have desired transformation in the base frame.

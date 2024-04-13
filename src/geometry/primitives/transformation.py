@@ -80,6 +80,23 @@ class Transformation:
         transformed_homogenous_point = self.matrix @ homogenous_point
         return transformed_homogenous_point[0:3]
 
+    def transform_triangle(self, triangle: np.ndarray) -> np.ndarray:
+        """Applies the transformation to all the points in the triangle.
+
+        Args:
+            triangle: numpy.ndarray
+                3x3 array. 3 vertices of a triangle in 3D space.
+
+        Returns:
+            numpy.ndarray:
+                3x3 array. The 3 vertices of the triangle after application of the transformation.
+        """
+
+        transformed_triangle = np.zeros((3, 3))
+        for i, point in enumerate(triangle):
+            transformed_triangle[i] = self.transform_point(point)
+        return transformed_triangle
+
     def __mul__(self, right: "Transformation") -> "Transformation":
         """Defines the behavior of the * operator.
 
@@ -104,7 +121,6 @@ class Transformation:
         string += row_to_string(self.matrix[3])
         string += "]"
         return string
-
 
     @staticmethod
     def construct(x: float, y: float, z: float, roll: float, pitch: float, yaw: float) -> "Transformation":

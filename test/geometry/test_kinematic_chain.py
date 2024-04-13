@@ -3,8 +3,7 @@ import numpy as np
 from geometry.kinematic_chain import KinematicOpenChain
 from geometry.primitives.transformation import Transformation
 from geometry.utilities import multiply
-from robots.ur5 import define_ur5_kinematic_chain, define_ur5_home_transformation, \
-    define_ur5_base_to_end_effector_transformations
+from robots.ur5 import define_ur5_kinematic_chain, define_ur5_base_to_end_effector_transformations
 
 # See page 147 of Modern Robotics.
 ur5_kinematic_chain = define_ur5_kinematic_chain()
@@ -40,5 +39,3 @@ def test_inverse_kinematics_from_transformation():
 
     assert np.allclose(ee_transformation_at_original_joint_angles.matrix,
                        ee_transformation_at_new_joint_angles.matrix, atol=2e-1)
-
-

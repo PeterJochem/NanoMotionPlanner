@@ -34,7 +34,6 @@ class UR5ZeroAngleTransformations:
         self.wrist_2_wrist_3_link_transformation = Transformation.construct(0., 0., 0., 0., 0., 0.)
         self.wrist_3_end_effector_link_transformation = Transformation.construct(0., 0.0823, 0., np.pi / 2., 0., 0.)
 
-        # self.zero_angle_transform = Transform(parent_frame, child_frame, x, y, z, roll, pitch, yaw)
         delta = 0.  # 0.001
         self.root_to_base_joint_transformation = Transformation.identity()
         self.base_to_shoulder_joint_transformation = Transformation.construct(0., 0., 0.089159, 0., 0., 0.)
@@ -44,8 +43,7 @@ class UR5ZeroAngleTransformations:
         self.wrist_1_wrist_2_joint_transformation = Transformation.construct(0., 0.093, 0., 0., 0., 0.)
         self.wrist_2_wrist_3_joint_transformation = Transformation.construct(0., delta, 0.09465, 0., 0., 0.)
 
-        links = [#self.root_to_base_link_transformation,
-                 Transformation.identity(),
+        links = [Transformation.identity(),
                  self.base_to_shoulder_link_transformation,
                  self.shoulder_upper_arm_link_transformation,
                  self.upper_arm_forearm_link_transformation,
@@ -162,7 +160,7 @@ def define_ur5_base_to_end_effector_transformations() -> List[Transformation]:
 
     Returns:
         List[Transformation]
-            ...
+            All the transformations from the base to the end effector when a UR5 robot has all zero joint angles.
     """
     return URDimensions().zero_angle_transformations.transformations
 
@@ -204,5 +202,4 @@ def define_ur5_kinematic_chain() -> KinematicOpenChain:
     screw5 = Screw(w5, v5)
     screw6 = Screw(w6, v6)
     screws = [screw1, screw2, screw3, screw4, screw5, screw6]
-    # return KinematicOpenChain(screws, define_ur5_home_transformation())
     return KinematicOpenChain(screws, define_ur5_base_to_end_effector_transformations())

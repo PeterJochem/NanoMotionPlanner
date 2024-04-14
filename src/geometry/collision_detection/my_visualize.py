@@ -38,6 +38,7 @@ def visualize_mesh(vertices, origin_vertices=None):
     vis.add_geometry(mesh)
     vis.run()
 
+
 def flatten(triangles) -> np.ndarray:
 
     result = []
@@ -45,6 +46,7 @@ def flatten(triangles) -> np.ndarray:
         point_1, point_2, point3 = triangle
         result += [point_1, point_2, point3]
     return result
+
 
 def visualize_two_meshes(t1, t2):
     """

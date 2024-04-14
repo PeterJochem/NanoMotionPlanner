@@ -1,3 +1,5 @@
+from typing import Tuple
+
 import numpy as np
 import math
 
@@ -43,7 +45,6 @@ def rotation_matrix(roll: float, pitch: float, yaw: float) -> np.ndarray:
     Rz[2][2] = 1.
 
     return (Rx @ Ry @ Rz).T
-    #return (Rz @ Ry @ Rx).T
 
 
 def construct_matrix(x: float, y: float, z: float, roll: float, pitch: float, yaw: float) -> np.ndarray:
@@ -76,7 +77,7 @@ def construct_matrix(x: float, y: float, z: float, roll: float, pitch: float, ya
     return matrix
 
 
-def euler_angles(matrix) -> np.ndarray:
+def euler_angles(matrix) -> Tuple[float, float, float]:
     """Extracts the Euler angles (XYZ convention).
 
         Notes:

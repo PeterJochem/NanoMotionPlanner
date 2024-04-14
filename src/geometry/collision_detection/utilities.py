@@ -1,5 +1,5 @@
 import numpy as np
-from typing import Optional, List
+from typing import Optional
 
 
 def normal_to_points_in_plane(points: np.ndarray) -> np.ndarray:
@@ -35,6 +35,10 @@ def approximately_equal(a: float, b: float, epsilon: float = 1e-8) -> bool:
 def same_sign(a: float, b: float) -> bool:
     """Checks if the two numbers have the same sign.
 
+    Args:
+        a: float
+        b: float
+
     Returns:
         bool:
             True iff both numbers are positive or both numbers are negative.
@@ -50,16 +54,6 @@ def num_zero(nums: np.ndarray) -> int:
             The number of entries in the array which are approximately 0.
     """
     return len([num for num in nums if approximately_equal(num, 0.)])
-
-
-def indices_of_zeros(nums: np.ndarray) -> List[int]:
-    """Gets the ...
-
-    Returns:
-        List[int]:
-            ...
-    """
-    return [i for i in range(len(nums)) if approximately_equal(nums[i], 0.)]
 
 
 def intersection_of_a_line_and_a_plane(point_1: np.ndarray,

@@ -8,6 +8,7 @@ from numerical_algorithms.utilities import normalized_cosine_similarity
 class TriangleTriangleCollisionDetector:
     """
     Detects collisions between two triangles in 3D space.
+
     Implements the algorithm detailed here:
         https://fileadmin.cs.lth.se/cs/Personal/Tomas_Akenine-Moller/code/tritri_tam.pdf
     """
@@ -30,12 +31,17 @@ class TriangleTriangleCollisionDetector:
     def triangles_lie_in_the_same_plane(self, epsilon: float = 0.05) -> bool:
         """Checks if the two triangles lie in the same plane.
 
+        Args:
+            epsilon: float:
+                Threshold for how close the two planes are to parallel.
+
         Returns:
             bool:
                 True iff the two triangles lie in the same plane.
         """
         ncs = normalized_cosine_similarity(self.triangle_1_plane_equation.n, self.triangle_2_plane_equation.n)
         return abs(ncs - 1.) < epsilon
+
 
     def seperate_points_by_signed_distance(self, points: np.ndarray, plane: PlaneEquation) -> np.ndarray:
         """Separates the points based on which side of the plane they lie on.

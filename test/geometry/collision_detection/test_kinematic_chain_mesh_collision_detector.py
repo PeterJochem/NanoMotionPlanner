@@ -14,7 +14,7 @@ angle = np.pi / 1.1
 
 
 @pytest.mark.skip(reason="Requires Open3D")
-@pytest.mark.parametrize("joint_angles", [np.array([0., angle, angle, angle, angle, 0.])])
+@pytest.mark.parametrize("joint_angles", [np.array([0., 0., 0., 0., 0., 0.])])
 def test_dummy(joint_angles: np.ndarray):
 
     for i in range(1):

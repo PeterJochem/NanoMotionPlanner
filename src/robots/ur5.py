@@ -90,7 +90,8 @@ class URDimensions:
 class UR5Meshes:
 
     path_to_file = os.path.dirname(os.path.abspath(__file__))
-    meshes_path = f"{path_to_file}/meshes/ur5/collision_2/collision/"
+    meshes_path = f"{path_to_file}/meshes/ur5/collision/"
+    meshes_path = f"{path_to_file}/meshes/ur5/collision/decimated"
 
     def __init__(self,
                  base: str = f"{meshes_path}/base.stl",

@@ -52,26 +52,21 @@ class KinematicOpenChain:
         return multiply(transformations)
 
     def forward_kinematics_base_to_nth_joint(self, joint_angles: np.ndarray) -> Transformation:
-        """Computes ...
+        """Computes the transformation of the nth joint in the base frame at the provided joint angles.
 
         Args:
             joint_angles: numpy.ndarray
 
         Returns:
             Transformation:
-                ...
+                Transformation in the base frame of the Nth joint at the provided joint angles.
         """
 
         m = len(joint_angles)
         n = (2 * m)
-
-        # [transformations induced by rotating about screws] + [zero angle transformation of joint i]
-        a = self.transformations(joint_angles)
-        b = self.zero_angle_transformations[:n]
-        transformations = a + b
-
-        print(f"m: {m}")
-        return multiply(transformations)
+        via_rotation = self.transformations(joint_angles)
+        base_to_joint_home_pose = self.zero_angle_transformations[:n]
+        return multiply(via_rotation + base_to_joint_home_pose)
 
     def end_effector_pose(self, joint_angles: np.ndarray) -> np.ndarray:
         """Computes the pose of the end effector frame in the base frame at the provided joint angles.

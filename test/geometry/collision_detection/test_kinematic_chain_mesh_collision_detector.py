@@ -2,35 +2,18 @@ from typing import List
 import pytest
 import numpy as np
 import open3d as o3d
-import open3d as mylib
 from geometry.collision_detection.kinematic_chain_mesh_collision_detector import KinematicChainMeshCollisionDetector
+from geometry.collision_detection.my_visualize import visualize_mesh
 from geometry.kinematic_chain import KinematicOpenChain
 from geometry.mesh import Mesh
 from geometry.primitives.transformation import Transformation
-from geometry.utilities import multiply
 from robots.ur5 import define_ur5_kinematic_chain, UR5Meshes, UR5ZeroAngleTransformations
 
-ur5_kinematic_chain = define_ur5_kinematic_chain()
-ur5_meshes = UR5Meshes().ordered_meshes
 
-test_case_1 = (ur5_kinematic_chain, ur5_meshes, np.zeros(6), False)
-
-kinematic_chain_mesh_collision_test_cases = [test_case_1]
-
-
-@pytest.mark.parametrize("kinematic_chain, meshes, joint_angles, expected", kinematic_chain_mesh_collision_test_cases)
-def test_kinematic_chain_mesh_collision_detector(kinematic_chain: KinematicOpenChain,
-                                                 meshes: List[Mesh],
-                                                 joint_angles: np.ndarray,
-                                                 expected: bool):
-
-    detector = KinematicChainMeshCollisionDetector(kinematic_chain, meshes)
-    #assert detector.detect(joint_angles) == expected
-    ...
-
+angle = np.pi / 1.1
 
 @pytest.mark.skip(reason="Requires Open3D")
-@pytest.mark.parametrize("joint_angles", [np.array([0., 0., 0., 0., 0., 0.])])
+@pytest.mark.parametrize("joint_angles", [np.array([0., angle, angle, angle, angle, 0.])])
 def test_dummy(joint_angles: np.ndarray):
 
     for i in range(1):
@@ -127,7 +110,11 @@ def test_dummy(joint_angles: np.ndarray):
 ur5_kinematic_chain = define_ur5_kinematic_chain()
 ur5_meshes = UR5Meshes().ordered_meshes
 
-test_cases = [(ur5_kinematic_chain, ur5_meshes, np.zeros(6), False)]
+test_case_1 = (ur5_kinematic_chain, ur5_meshes, np.zeros(6), False)
+test_case_2 = (ur5_kinematic_chain, ur5_meshes, np.array([0., np.pi / 1.1, np.pi / 1.1, np.pi / 1.1, np.pi / 1.1, 0.]),
+               True)
+
+test_cases = [test_case_1, test_case_2]
 
 
 #@pytest.mark.skip(reason="Requires Open3D")

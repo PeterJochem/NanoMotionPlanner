@@ -58,7 +58,7 @@ class KinematicChainMeshCollisionDetector:
                 visualize_two_meshes(transformed_meshes[mesh_1_idx].triangles,
                                      transformed_meshes[mesh_2_idx].triangles)
                 return True
-            else:
-                return False
+            #else:
+            #    return False
 
         return False

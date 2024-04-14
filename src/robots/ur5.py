@@ -43,6 +43,9 @@ class UR5ZeroAngleTransformations:
         self.wrist_1_wrist_2_joint_transformation = Transformation.construct(0., 0.093, 0., 0., 0., 0.)
         self.wrist_2_wrist_3_joint_transformation = Transformation.construct(0., delta, 0.09465, 0., 0., 0.)
 
+        #       1           2            3          4          5!!       6
+        # Base -> shoulder -> upper arm -> forearm -> wrist_1 -> wrist_2 -> wrist_3 (contains end effector)
+
         links = [Transformation.identity(),
                  self.base_to_shoulder_link_transformation,
                  self.shoulder_upper_arm_link_transformation,
@@ -61,7 +64,8 @@ class UR5ZeroAngleTransformations:
 
         self.transformations = []
         for link_transformation, joint_transformation in zip(links, joints):
-            self.transformations += [link_transformation, joint_transformation]
+            #self.transformations += [link_transformation, joint_transformation]
+            self.transformations += [joint_transformation, link_transformation]
         self.transformations += [self.wrist_3_end_effector_link_transformation]
 
 

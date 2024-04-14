@@ -12,6 +12,7 @@ from robots.ur5 import define_ur5_kinematic_chain, UR5Meshes, UR5ZeroAngleTransf
 
 angle = np.pi / 1.1
 
+
 @pytest.mark.skip(reason="Requires Open3D")
 @pytest.mark.parametrize("joint_angles", [np.array([0., angle, angle, angle, angle, 0.])])
 def test_dummy(joint_angles: np.ndarray):

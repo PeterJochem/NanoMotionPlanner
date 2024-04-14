@@ -47,9 +47,7 @@ class KinematicOpenChain:
             Transformation:
                 The transformation from the base link to the end effector link.
         """
-
-        transformations = self.transformations(joint_angles) + self.zero_angle_transformations
-        return multiply(transformations)
+        return multiply(self.transformations(joint_angles) + self.zero_angle_transformations)
 
     def forward_kinematics_base_to_nth_joint(self, joint_angles: np.ndarray) -> Transformation:
         """Computes the transformation of the nth joint in the base frame at the provided joint angles.
@@ -78,9 +76,7 @@ class KinematicOpenChain:
             numpy.ndarray:
                 The pose of the end effector frame in the base frame at the provided joint angles.
         """
-
-        base_to_ee = self.forward_kinematics(joint_angles)
-        return pose(base_to_ee)
+        return pose(self.forward_kinematics(joint_angles))
 
     def inverse_kinematics(self,
                            desired_base_to_end_effector_pose: np.ndarray,

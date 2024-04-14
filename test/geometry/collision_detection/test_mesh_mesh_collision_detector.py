@@ -6,8 +6,7 @@ from test.geometry.collision_detection.constant_triangles import (triangle_1, tr
                                                                   triangle_5, triangle_6, triangle_7, triangle_8,
                                                                   triangle_9, triangle_10, triangle_11, triangle_12,
                                                                   triangle_13, triangle_14, triangle_15, triangle_16,
-                                                                  triangle_17, triangle_18, triangle_19, triangle_20
-                                                                  )
+                                                                  triangle_17, triangle_18, triangle_19, triangle_20)
 
 
 test_case_1 = (Mesh(np.array([triangle_1])), Mesh(np.array([triangle_2])), False)

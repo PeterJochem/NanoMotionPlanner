@@ -137,8 +137,5 @@ class Mesh:
                 The binary STL mesh represented as a Mesh object.
         """
 
-        # vertices, faces = cls.read_vertices_and_faces_from_binary_stl_file(file_path)
         triangles = cls.read_vertices_from_binary_stl_file(file_path)
         return Mesh(triangles)
-
-

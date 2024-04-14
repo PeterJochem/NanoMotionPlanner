@@ -31,7 +31,7 @@ class Interval:
         """Checks if this interval and the other one overlap.
 
         Args:
-            other: "Interval"
+            other: Interval
 
         Returns:
             bool:

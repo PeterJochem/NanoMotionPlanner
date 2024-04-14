@@ -45,7 +45,12 @@ class Screw:
         return screw
 
     def as_6_vector(self) -> np.ndarray:
-        """..."""
+        """Gets the screw represented as [w, v], i.e. a 6 vector.
+
+        Returns:
+            numpy.ndarray:
+                [w, v]
+        """
         return np.append(self.w, self.v)
 
     def twist(self, theta_dot: float) -> np.ndarray:

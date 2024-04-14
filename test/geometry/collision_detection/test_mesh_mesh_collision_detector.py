@@ -39,6 +39,7 @@ mesh_mesh_collision_test_cases = [test_case_1, test_case_2, test_case_3, test_ca
                                   test_case_19, test_case_20, test_case_21]
 
 
+@pytest.mark.skip(reason="Requires Open3D")
 @pytest.mark.parametrize("mesh_1, mesh_2, expected", mesh_mesh_collision_test_cases)
 def test_mesh_mesh_collision_detector(mesh_1: Mesh, mesh_2: Mesh, expected: bool):
 

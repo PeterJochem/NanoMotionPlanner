@@ -1,6 +1,7 @@
 from typing import List
 import numpy as np
 from geometry.collision_detection.mesh_mesh_collision_detector import MeshMeshCollisionDetector
+from geometry.collision_detection.my_visualize import visualize_two_meshes
 from geometry.kinematic_chain import KinematicOpenChain
 from geometry.mesh import Mesh
 from geometry.utilities import multiply
@@ -34,15 +35,17 @@ class KinematicChainMeshCollisionDetector:
                 True iff there is at least one collision between the meshes of the kinematic chain.
         """
 
-        joint_to_joint_transformations = self.kinematic_chain.transformations(joint_angles)
-        a = joint_to_joint_transformations
-        breakpoint()
         n = len(self.meshes)
 
         transformed_meshes = [self.meshes[0]]
         for i in range(1, n):
-            base_to_joint_i = multiply(joint_to_joint_transformations[:i])
-            transformed_meshes.append(self.meshes[i].transformed_mesh(base_to_joint_i))
+
+            base_to_joint_i = self.kinematic_chain.forward_kinematics_base_to_nth_joint(joint_angles[:i])
+            a = base_to_joint_i
+            #breakpoint()
+            transformed_mesh = self.meshes[i].transformed_mesh(base_to_joint_i)
+
+            transformed_meshes.append(transformed_mesh)
 
         mesh_idx_pairs = []
         for i in range(n):
@@ -53,6 +56,10 @@ class KinematicChainMeshCollisionDetector:
             detector = MeshMeshCollisionDetector(transformed_meshes[mesh_1_idx], transformed_meshes[mesh_2_idx])
             if detector.detect():
                 breakpoint()
+                visualize_two_meshes(transformed_meshes[mesh_1_idx].triangles,
+                                     transformed_meshes[mesh_2_idx].triangles)
                 return True
+            #else:
+            #    return False
 
         return False

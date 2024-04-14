@@ -35,6 +35,9 @@ class MeshMeshCollisionDetector:
             detector = TriangleTriangleCollisionDetector(triangle_1, triangle_2)
 
             if detector.detect():
+                a = triangle_1
+                b = triangle_2
+                #breakpoint()
                 return True
 
         return False

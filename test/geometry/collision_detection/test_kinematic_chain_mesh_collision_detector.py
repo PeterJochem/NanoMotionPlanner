@@ -81,8 +81,8 @@ def test_dummy():
 
     angle = np.pi/3
     np.array([0., 0., angle, 0., 0., 0.])
-    joint_angles = np.array([angle, angle, angle, angle, 0., 0.])
-    joint_angles = np.array([0., 0., 0., 0., 0., angle])
+    joint_angles = np.array([angle, angle, angle, angle, 2.5, 0.])
+    #joint_angles = np.array([0., 0., angle, 0., 0., 0.])
 
     Ts = UR5ZeroAngleTransformations().transformations
 

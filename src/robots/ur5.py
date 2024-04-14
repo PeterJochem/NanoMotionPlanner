@@ -234,7 +234,7 @@ def define_ur5_kinematic_chain() -> KinematicOpenChain:
     v5 = np.array([-dimensions.W1, dimensions.L1 + dimensions.L2, 0.])
 
     q = np.array([-0.81725, 0.10915, 0.089159])
-    s = np.array([0., 1., 0.])
+    s = np.array([0., 0., 1.])
     h = 0.
     screw_5 = Screw.construct_from_q_s_h(q, s, h)
 

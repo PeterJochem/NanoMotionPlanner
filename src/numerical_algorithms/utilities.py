@@ -2,6 +2,37 @@ from typing import Callable, Union
 import numpy as np
 
 
+def normalized_cosine_similarity(vector_1: np.ndarray, vector_2: np.ndarray) -> float:
+    """Calculates the normalized cosine similarity metric between the two provided vectors.
+
+    Notes:
+        Normalized denotes that two parallel vectors would have a ncs of 1.0.
+
+    Args:
+        vector_1: numpy.ndarray
+        vector_2: numpy.ndarray
+
+    Returns:
+        float:
+            cosine of angle between the two provided vectors.
+    """
+    return abs(np.dot(vector_1, vector_2) / (np.linalg.norm(vector_1) * np.linalg.norm(vector_2)))
+
+
+def angle_between_vectors(vector_1: np.ndarray, vector_2: np.ndarray) -> float:
+    """Calculates the angle (in radians) between the two provided vectors.
+
+    Args:
+        vector_1: numpy.ndarray
+        vector_2: numpy.ndarray
+
+    Returns:
+        float:
+            The angle, in radians, between the two vectors.
+    """
+    return np.arccos(normalized_cosine_similarity(vector_1, vector_2))
+
+
 def one_hot(length: int, hot_index: int, scale: float) -> np.ndarray:
     """Creates a one hot array.
 

@@ -4,7 +4,6 @@ from geometry.collision_detection.mesh_mesh_collision_detector import MeshMeshCo
 from geometry.collision_detection.my_visualize import visualize_two_meshes
 from geometry.kinematic_chain import KinematicOpenChain
 from geometry.mesh import Mesh
-from geometry.utilities import multiply
 
 
 class KinematicChainMeshCollisionDetector:
@@ -59,7 +58,7 @@ class KinematicChainMeshCollisionDetector:
                 visualize_two_meshes(transformed_meshes[mesh_1_idx].triangles,
                                      transformed_meshes[mesh_2_idx].triangles)
                 return True
-            #else:
-            #    return False
+            else:
+                return False
 
         return False

@@ -4,6 +4,7 @@ from geometry.collision_detection.my_visualize import visualize_two_meshes
 from geometry.collision_detection.utilities import same_sign, intersection_of_a_line_and_a_plane, num_zero
 from geometry.primitives.interval import Interval
 from geometry.primitives.plane_equation import PlaneEquation
+from numerical_algorithms.utilities import normalized_cosine_similarity
 
 
 class TriangleTriangleCollisionDetector:
@@ -28,16 +29,15 @@ class TriangleTriangleCollisionDetector:
         self.triangle_1_plane_equation = PlaneEquation(triangle_1)
         self.triangle_2_plane_equation = PlaneEquation(triangle_2)
 
-    def triangles_lie_in_the_same_plane(self) -> bool:
+    def triangles_lie_in_the_same_plane(self, epsilon: float = 0.05) -> bool:
         """Checks if the two triangles lie in the same plane.
 
         Returns:
             bool:
                 True iff the two triangles lie in the same plane.
         """
-
-        distances = self.triangle_1_plane_equation.signed_distances(self.triangle_2)
-        return num_zero(distances) == 3
+        ncs = normalized_cosine_similarity(self.triangle_1_plane_equation.n, self.triangle_2_plane_equation.n)
+        return abs(ncs - 1.) < epsilon
 
     def seperate_points_by_signed_distance(self, points: np.ndarray, plane: PlaneEquation) -> np.ndarray:
         """Separates the points based on which side of the plane they lie on.
@@ -87,24 +87,12 @@ class TriangleTriangleCollisionDetector:
                 True iff there is a collision between the two triangles in 3D space.
         """
 
-        one_one_side = self.triangle_1_plane_equation.all_vertices_lie_on_one_side_of_plane(self.triangle_2)
-
         if self.triangle_1_plane_equation.all_vertices_lie_on_one_side_of_plane(self.triangle_2):
             return False
         elif self.triangle_2_plane_equation.all_vertices_lie_on_one_side_of_plane(self.triangle_1):
             return False
         elif self.triangles_lie_in_the_same_plane():
-            #breakpoint()
-            return False  # Very rare edge case that should be handled properly.
-
-        # The two triangles are very close to being in the same plane.
-        aa = abs(np.dot(self.triangle_1_plane_equation.n, self.triangle_2_plane_equation.n))
-        if abs(aa - 1.) < 0.20:
             return False
-
-        # 0.01 -> works
-        # 0.001 -> fails
-        #self.triangle_1_plane_equation.d += 0.0039
 
         triangle_1_separated_points = self.seperate_points_by_signed_distance(self.triangle_1,
                                                                               self.triangle_2_plane_equation)
@@ -128,20 +116,9 @@ class TriangleTriangleCollisionDetector:
         # Use just the equation in x to solve for T.
 
         t1 = 0.
-        try:
-            t2 = (intersection_point_2[0] - intersection_point_1[0]) / direction[0]
-        except:
-            #breakpoint()
-            return False
+        t2 = (intersection_point_2[0] - intersection_point_1[0]) / direction[0]
 
         # Calculate the two locations where triangle 2 intersects plane 1.
-
-        a = self.triangle_1_plane_equation.signed_distances(self.triangle_2)
-        b = self.triangle_2_plane_equation.signed_distances(self.triangle_1)
-
-        abc = triangle_2_separated_points[0] - triangle_2_separated_points[2]
-        deg = triangle_2_separated_points[1] - triangle_2_separated_points[2]
-
         intersection_point_3 = intersection_of_a_line_and_a_plane(triangle_2_separated_points[0],
                                                                   triangle_2_separated_points[2],
                                                                   self.triangle_1_plane_equation)
@@ -156,11 +133,4 @@ class TriangleTriangleCollisionDetector:
         interval_1 = Interval(t1, t2)
         interval_2 = Interval(t3, t4)
 
-        if abs(interval_1.larger - interval_1.smaller) < 0.1 or abs(interval_2.larger - interval_2.smaller) < 0.1:
-            return False
-
-        #breakpoint()
-        if interval_1.intersects(interval_2):
-            breakpoint()
-            visualize_two_meshes([self.triangle_1], [self.triangle_2])
         return interval_1.intersects(interval_2)

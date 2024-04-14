@@ -1,7 +1,5 @@
 import numpy as np
-
-from geometry.collision_detection.my_visualize import visualize_two_meshes
-from geometry.collision_detection.utilities import same_sign, intersection_of_a_line_and_a_plane, num_zero
+from geometry.collision_detection.utilities import same_sign, intersection_of_a_line_and_a_plane
 from geometry.primitives.interval import Interval
 from geometry.primitives.plane_equation import PlaneEquation
 from numerical_algorithms.utilities import normalized_cosine_similarity
@@ -69,12 +67,7 @@ class TriangleTriangleCollisionDetector:
             separated_points[0] = points[1]
             separated_points[1] = points[2]
             separated_points[2] = points[0]
-            #elif num_zero([point_1_distance, point_2_distance, point_3_distance]) == 1:
-            #    idx = indices_of_zeros([point_1_distance, point_2_distance, point_3_distance])
-            #   Edge case where one or more points lie in the plane.
-            #breakpoint()
         else:
-            breakpoint()
             raise RuntimeError("All the points share the same sign or all are zero.")
 
         return separated_points

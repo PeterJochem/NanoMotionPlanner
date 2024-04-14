@@ -5,6 +5,7 @@ from geometry.kinematic_chain import KinematicOpenChain
 from geometry.mesh import Mesh
 from geometry.primitives.screw import Screw
 from geometry.primitives.transformation import Transformation
+from geometry.utilities import multiply
 
 
 def mm_to_meters(n: float) -> float:
@@ -26,16 +27,19 @@ class UR5ZeroAngleTransformations:
     def __init__(self):
         # Define the Transformation from one joint to the next.
         self.root_to_base_link_transformation = Transformation.construct(1.0, 0., 0., 0., 0., 0.)
-        self.base_to_shoulder_link_transformation = Transformation.construct(0., 0., 0., 0., 0., 0.)
+
+        self.base_to_shoulder_link_transformation = Transformation.construct(0., 0., 0.0, 0., 0., 0.)
         self.shoulder_upper_arm_link_transformation = Transformation.construct(0., 0., 0., 0., 0., 0.)
         self.upper_arm_forearm_link_transformation = Transformation.construct(0., 0., 0., 0., 0., 0.)
         self.forearm_wrist_1_link_transformation = Transformation.construct(0., 0., 0., 0., 0., 0.)
         self.wrist_1_wrist_2_link_transformation = Transformation.construct(0., 0., 0., 0., 0., 0.)
+
         self.wrist_2_wrist_3_link_transformation = Transformation.construct(0., 0., 0., 0., 0., 0.)
-        self.wrist_3_end_effector_link_transformation = Transformation.construct(0., 0.0823, 0., np.pi / 2., 0., 0.)
+        self.wrist_3_end_effector_link_transformation = Transformation.construct(0., 0., 0., np.pi/2, 0., 0.)
 
         delta = 0.  # 0.001
         self.root_to_base_joint_transformation = Transformation.identity()
+
         self.base_to_shoulder_joint_transformation = Transformation.construct(0., 0., 0.089159, 0., 0., 0.)
         self.shoulder_upper_arm_joint_transformation = Transformation.construct(0., 0.13585, 0., 0., np.pi / 2, 0.)
         self.upper_arm_forearm_joint_transformation = Transformation.construct(0., -0.1197 - delta, 0.425, 0., 0., 0.)
@@ -46,7 +50,7 @@ class UR5ZeroAngleTransformations:
         #       1           2            3          4          5!!       6
         # Base -> shoulder -> upper arm -> forearm -> wrist_1 -> wrist_2 -> wrist_3 (contains end effector)
 
-        links = [Transformation.identity(),
+        links = [ # Transformation.identity(),
                  self.base_to_shoulder_link_transformation,
                  self.shoulder_upper_arm_link_transformation,
                  self.upper_arm_forearm_link_transformation,
@@ -54,7 +58,7 @@ class UR5ZeroAngleTransformations:
                  self.wrist_1_wrist_2_link_transformation,
                  self.wrist_2_wrist_3_link_transformation]
 
-        joints = [self.root_to_base_joint_transformation,
+        joints = [# self.root_to_base_joint_transformation,
                   self.base_to_shoulder_joint_transformation,
                   self.shoulder_upper_arm_joint_transformation,
                   self.upper_arm_forearm_joint_transformation,
@@ -64,9 +68,10 @@ class UR5ZeroAngleTransformations:
 
         self.transformations = []
         for link_transformation, joint_transformation in zip(links, joints):
-            #self.transformations += [link_transformation, joint_transformation]
-            self.transformations += [joint_transformation, link_transformation]
-        self.transformations += [self.wrist_3_end_effector_link_transformation]
+            self.transformations = self.transformations + [link_transformation, joint_transformation]
+            #self.transformations = self.transformations + [joint_transformation, link_transformation]
+            #self.transformations += [joint_transformation, link_transformation]
+        self.transformations = self.transformations + [self.wrist_3_end_effector_link_transformation]
 
 
 class URDimensions:
@@ -85,7 +90,7 @@ class URDimensions:
 class UR5Meshes:
 
     path_to_file = os.path.dirname(os.path.abspath(__file__))
-    meshes_path = f"{path_to_file}/meshes/ur5/collision/"
+    meshes_path = f"{path_to_file}/meshes/ur5/collision_2/collision/"
 
     def __init__(self,
                  base: str = f"{meshes_path}/base.stl",
@@ -166,7 +171,11 @@ def define_ur5_base_to_end_effector_transformations() -> List[Transformation]:
         List[Transformation]
             All the transformations from the base to the end effector when a UR5 robot has all zero joint angles.
     """
-    return URDimensions().zero_angle_transformations.transformations
+    a = URDimensions().zero_angle_transformations.transformations
+    b = multiply(a)
+    c = define_ur5_home_transformation()
+    #breakpoint()
+    return a
 
 
 def define_ur5_kinematic_chain() -> KinematicOpenChain:
@@ -187,23 +196,61 @@ def define_ur5_kinematic_chain() -> KinematicOpenChain:
     w2 = np.array([0., 1., 0.])
     v2 = np.array([-dimensions.H1, 0., 0.])
 
+    #self.W1 = mm_to_meters(109.)
+    #self.W2 = mm_to_meters(82.)
+    #self.L1 = mm_to_meters(425.)
+    #self.L2 = mm_to_meters(392.)
+    #self.H1 = mm_to_meters(89.)
+    #self.H2 = mm_to_meters(95.)
+
+    #array([0., 0., 0.]),
+    #array([0., 0., 0.089159]),
+    #array([0., 0.13585, 0.089159]),
+
+    #array([-0.425, 0.01615, 0.089159]),
+    #array([-0.81725, 0.01615, 0.089159]),
+    #array([-0.81725, 0.10915, 0.089159]),
+    #array([-0.81725, 0.10915, -0.005491])]
+
+
     w3 = np.array([0., 1., 0.])
-    v3 = np.array([-dimensions.H1, 0., dimensions.L1])
+    # 0., 0.13585, 0.089159
+    v3 = np.array([0., dimensions.H1, dimensions.L1])
+    q = np.array([-0.425, 0.01615, 0.089159])
+    s = np.array([0., 1., 0.])
+    h = 0.
+    screw_3 = Screw.construct_from_q_s_h(q, s, h)
 
     w4 = np.array([0., 1., 0.])
     v4 = np.array([-dimensions.H1, 0., dimensions.L1 + dimensions.L2])
+    w3 = np.array([0., 1., 0.])
+
+    q = np.array([-0.81725, 0.01615, 0.089159])
+    s = np.array([0., 1., 0.])
+    h = 0.
+    screw_4 = Screw.construct_from_q_s_h(q, s, h)
 
     w5 = np.array([0., 0., -1.])
     v5 = np.array([-dimensions.W1, dimensions.L1 + dimensions.L2, 0.])
 
+    q = np.array([-0.81725, 0.10915, 0.089159])
+    s = np.array([0., 1., 0.])
+    h = 0.
+    screw_5 = Screw.construct_from_q_s_h(q, s, h)
+
     w6 = np.array([0., 1., 0.])
     v6 = np.array([dimensions.H2 - dimensions.H1, 0., dimensions.L1 + dimensions.L2])
 
+    q = np.array([-0.81725, 0.10915, -0.005491])
+    s = np.array([0., 1., 0.])
+    h = 0.
+    screw_6 = Screw.construct_from_q_s_h(q, s, h)
+
     screw1 = Screw(w1, v1)
     screw2 = Screw(w2, v2)
-    screw3 = Screw(w3, v3)
-    screw4 = Screw(w4, v4)
-    screw5 = Screw(w5, v5)
-    screw6 = Screw(w6, v6)
+    screw3 = screw_3  # Screw(w3, v3)
+    screw4 = screw_4  # Screw(w4, v4)
+    screw5 = screw_5  # Screw(w5, v5)
+    screw6 = screw_6  # Screw(w6, v6)
     screws = [screw1, screw2, screw3, screw4, screw5, screw6]
     return KinematicOpenChain(screws, define_ur5_base_to_end_effector_transformations())

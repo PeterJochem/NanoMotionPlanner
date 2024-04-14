@@ -63,20 +63,12 @@ class KinematicOpenChain:
         """
 
         m = len(joint_angles)
-        n = (2 * m) + 1
-
-        # 1 -> 3
-        # 2 -> 5
-        # 3 -> 7
+        n = (2 * m)
 
         # [transformations induced by rotating about screws] + [zero angle transformation of joint i]
         a = self.transformations(joint_angles)
         b = self.zero_angle_transformations[:n]
         transformations = a + b
-        #if abs(joint_angles[-1]) > 0.1:
-        if len(joint_angles) == 3:
-            a = a[-1]
-            breakpoint()
 
         print(f"m: {m}")
         return multiply(transformations)

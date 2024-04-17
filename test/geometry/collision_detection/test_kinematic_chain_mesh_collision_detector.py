@@ -102,9 +102,7 @@ def test_dummy(joint_angles: np.ndarray):
                                   link_7_vertices
                                   )
         robot_mesh_triangles = o3d.utility.Vector3dVector(robot_vertices)
-        a = transformed_origins
         transformed_origins = o3d.utility.Vector3dVector(transformed_origins)
-        breakpoint()
         visualize_mesh(robot_mesh_triangles, transformed_origins)
 
 

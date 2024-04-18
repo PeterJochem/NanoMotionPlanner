@@ -52,11 +52,15 @@ def define_r_robot_mesh(link_length: float) -> List[Mesh]:
 
 class PlanarRRobot(Robot):
     """
-    A very simple robot for testing purposes.
+    A very simple, single revolute joint robot for testing purposes.
     """
 
-    def __init__(self):
-        """Constructor."""
+    def __init__(self, link_length: float = 1.):
+        """Constructor.
 
-        length = 1.
-        super().__init__(define_r_robot_kinematic_chain(length), define_r_robot_mesh(length))
+        Args:
+            link_length: float
+                The length of the single link in meters.
+        """
+
+        super().__init__(define_r_robot_kinematic_chain(link_length), define_r_robot_mesh(link_length))

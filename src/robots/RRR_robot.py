@@ -12,7 +12,12 @@ LINK_3_LENGTH = 1.
 
 
 def define_RRR_robot_kinematic_chain() -> KinematicOpenChain:
-    """..."""
+    """Defines the 3xRevolute robot.
+
+    Returns:
+        KinematicOpenChain:
+            Represents the kinematics of the 3xRevolute robot.
+    """
 
     z_axis = np.array([0., 0., 1.])
     origin = np.zeros(3)
@@ -27,19 +32,17 @@ def define_RRR_robot_kinematic_chain() -> KinematicOpenChain:
     link_three_to_end_effector = Transformation.construct()
 
     screws = [joint_one_screw, joint_two_screw, joint_three_screw]
-
     transformations = [link_one_to_two_transformation, link_two_to_three_transformation, link_three_to_end_effector]
 
     return KinematicOpenChain(screws, transformations)
 
 
 def define_RRR_robot_meshes() -> List[Mesh]:
-    """
-
+    """Defines the 3xRevolute joint robot meshes.
 
     Returns:
         List[Mesh]:
-            ...
+            The meshes for the 3xRevolute joint robot.
     """
 
     y_delta = 0.25
@@ -64,7 +67,7 @@ def define_RRR_robot_meshes() -> List[Mesh]:
 
 class PlanarRRRRobot(Robot):
     """
-    A fake robot for testing purposes. It simply always
+    A very simple, 3xRevolute joint robot for testing purposes.
     """
 
     def __init__(self):
@@ -82,4 +85,4 @@ class PlanarRRRRobot(Robot):
             bool:
                 True iff the provided joint angles are free of self collisions.
         """
-        return ...
+        return True

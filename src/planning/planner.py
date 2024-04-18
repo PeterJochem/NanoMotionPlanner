@@ -20,7 +20,6 @@ class Planner(ABC):
         self.problem = problem
         self.time_scaler = time_scaler
 
-    @abstractmethod
     def plan_trajectory(self) -> Trajectory:
         """Plans a trajectory in accordance with the problem's parameters.
 

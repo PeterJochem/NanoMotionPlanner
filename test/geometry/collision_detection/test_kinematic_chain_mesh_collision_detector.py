@@ -116,7 +116,7 @@ test_case_2 = (ur5_kinematic_chain, ur5_meshes, np.array([0., np.pi / 1.1, np.pi
 test_cases = [test_case_1, test_case_2]
 
 
-#@pytest.mark.skip(reason="Requires Open3D")
+@pytest.mark.skip(reason="Requires Open3D")
 @pytest.mark.parametrize("kinematic_chain, meshes, joint_angles, expected", test_cases)
 def test_mesh_mesh_collision_detector(kinematic_chain: KinematicOpenChain,
                                       meshes: List[Mesh],

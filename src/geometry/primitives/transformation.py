@@ -139,5 +139,6 @@ class Transformation:
 
         Returns:
             Transformation:
+                A transformation with no translation or rotation.
         """
         return Transformation.construct(0., 0., 0., 0., 0., 0.)

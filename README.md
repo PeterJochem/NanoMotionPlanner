@@ -1,11 +1,20 @@
 # NanoMotionPlanner
-This is a motion planner for robotic arms written entirely in Python. It only depends on Numpy!
+This is a motion planner for robotic arms written entirely in Python. It only depends on Numpy and Pytest!
 
+# Results
+I have implemented a lot of fundamental robotics algorithms and a few planning algorithms.
 
-# Test Plan
-Plan for a 6DOF arm but use super simple meshes. Use the UR5 arm but downsample its collision meshes in Blender or using another open source tool. 
+## Robotics Algorithms
+1. Triangle-Triangle Collision Checking
+2. Mesh-Mesh Collision Checking
+3. Robot Self Collision Checking
+4. Forward Kinematics via Screw Theory
+5. Inverse Kinematics
 
+## Planning Algorithms
+1. RRT
+2. RRT Connect
+3. More to Come!
 
-# Results 
-
-
+# Running the Tests
+pytest ./tests

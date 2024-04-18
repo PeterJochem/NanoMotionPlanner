@@ -42,7 +42,7 @@ class NaiveListGraph:
         """Constructor."""
         super().__init__()
         self.states = []
-        self.edges = {}  # tuple(state) -> connected states
+        self.parents = {}  # tuple(state) -> parent state
 
     def nearest_neighbor(self, state: np.ndarray) -> np.ndarray:
         """Gets the nearest neighbor to the provided state.
@@ -61,13 +61,8 @@ class NaiveListGraph:
         distances = [(np.linalg.norm(state - neighbor), neighbor) for neighbor in self.states]
         return min(distances)[1]
 
-    def add(self, state: np.ndarray, edges: List[np.ndarray] = None):
+    def add(self, state: np.ndarray, parent: np.ndarray):
         """..."""
         self.states.append(state)
-        edge_key = tuple(state)
-
-        if edges is not None:
-            if edge_key in self.edges:
-                self.edges[edge_key] += edges
-            else:
-                self.edges[edge_key] = edges
+        key = tuple(state)
+        self.parents[key] = parent

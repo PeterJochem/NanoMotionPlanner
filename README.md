@@ -14,7 +14,12 @@ I have implemented a lot of fundamental robotics and planning algorithms.
 ## Planning Algorithms
 1. RRT
 2. RRT Connect
-3. More to Come!
+3. A*
+4. Probabilistic Roadmap
+5. More to Come!
 
 # Running the Tests
 pytest ./tests
+
+# Future Improvements
+1. Create a C-Module to do triangle-triangle collision detection. This would greatly reduce the time spent doing collision detection.

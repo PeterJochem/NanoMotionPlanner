@@ -20,7 +20,6 @@ I have implemented a lot of fundamental robotics and planning algorithms.
 
 # Running the Tests
 ```
-bash
 export PYTHONPATH="${PYTHONPATH}:<path to repo>/nano_motion_planner/src"  
 pytest ./tests
 ```

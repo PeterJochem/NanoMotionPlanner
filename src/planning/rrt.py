@@ -73,7 +73,7 @@ class RRT(Planner):
         return self.convert_graph_to_path(graph, goal_state)
 
     def convert_graph_to_path(self, graph: Graph, goal_state: np.ndarray) -> np.ndarray:
-        """Converts the provided graph into a set of
+        """Converts the provided graph into a path, a set of kinematic states for the robot to travel through.
 
         Args:
             graph: Graph

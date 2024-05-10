@@ -19,7 +19,11 @@ I have implemented a lot of fundamental robotics and planning algorithms.
 5. More to Come!
 
 # Running the Tests
+```
+bash
+export PYTHONPATH="${PYTHONPATH}:<path to repo>/nano_motion_planner/src"  
 pytest ./tests
+```
 
 # Future Improvements
 1. Create a C-Module to do triangle-triangle collision detection. This would greatly reduce the time spent doing collision detection.

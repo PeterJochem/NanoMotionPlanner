@@ -1,5 +1,5 @@
-from abc import ABC, abstractmethod
 import numpy as np
+from abc import ABC, abstractmethod
 from planning.planning_problem import PlanningProblem
 from planning.primitives.trajectory import Trajectory
 from planning.time_scaling.time_scaler import TimeScaler

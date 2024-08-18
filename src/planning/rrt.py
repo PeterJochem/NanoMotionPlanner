@@ -1,5 +1,4 @@
 from typing import Optional
-
 import numpy as np
 from planning.graphs.graph import NaiveListGraph, Graph
 from planning.planner import Planner

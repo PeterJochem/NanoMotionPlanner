@@ -1,5 +1,4 @@
 from typing import Optional
-
 import numpy as np
 import heapq
 from planning.a_star_planning_parameters import AStarPlanningParameters

@@ -1,6 +1,6 @@
 import numpy as np
-from planning.a_star import AStar
-from planning.a_star_planning_parameters import AStarPlanningParameters
+from planning.a_star.a_star import AStar
+from planning.a_star.a_star_planning_parameters import AStarPlanningParameters
 from planning.planning_problem import JointStateToJointStatePlanningProblem
 from robots.ur5 import UR5
 

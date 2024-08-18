@@ -1,6 +1,6 @@
 import numpy as np
 from planning.planning_problem import JointStateToJointStatePlanningProblem
-from planning.rrt import RRT
+from planning.rrt.rrt import RRT
 from robots.ur5 import UR5
 
 

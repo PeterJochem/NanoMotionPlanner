@@ -1,4 +1,5 @@
 from typing import Any
+import numpy as np
 
 
 class HeapNode:
@@ -18,3 +19,17 @@ class HeapNode:
 
     def __lt__(self, other: "HeapNode") -> bool:
         return self.distance < other.distance
+
+
+def euclidean_distance(point1: np.ndarray, point2: np.ndarray) -> float:
+    """Calculates the Euclidean distance between two N-dimensional points.
+
+    Args:
+        point1: numpy.ndarray
+        point2: numpy.ndarray
+
+    Returns:
+        float:
+            Distance in RN space.
+    """
+    return np.linalg.norm(point1 - point2)

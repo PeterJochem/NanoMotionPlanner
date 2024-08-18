@@ -1,10 +1,12 @@
+from typing import Optional
+
 import numpy as np
 import heapq
 from planning.a_star_planning_parameters import AStarPlanningParameters
 from planning.planner import Planner
 from planning.planning_problem import PlanningProblem
 from planning.time_scaling.time_scaler import TimeScaler
-from planning.utilities import HeapNode
+from planning.utilities import HeapNode, euclidean_distance
 
 
 class AStar(Planner):
@@ -42,7 +44,6 @@ class AStar(Planner):
         """
 
         num_joints = len(grid)
-
         neighbors = []
         for joint_index in range(num_joints):
 
@@ -63,11 +64,8 @@ class AStar(Planner):
 
         return np.array(neighbors)
 
-    def plan_path(self):
+    def plan_path(self) -> Optional[np.ndarray]:
         """..."""
-
-        current_iteration = 0
-        max_num_iterations = 5000 * 40
 
         num_entries_in_row = self.parameters.discretization_factor
         self.grid = np.zeros((self.parameters.num_joints, num_entries_in_row))
@@ -79,8 +77,9 @@ class AStar(Planner):
         frontier_dict = {tuple(starting_idxs): True}
         closed_set = {}
         min_cost_parents = {}
+        current_iteration = 0
 
-        while current_iteration < max_num_iterations:
+        while current_iteration < self.parameters.max_num_iterations:
 
             searching_from_heap_node = heapq.heappop(frontier_list)
 
@@ -103,9 +102,9 @@ class AStar(Planner):
                 neighbor_joint_angles = self.indices_to_joint_angle(self.grid, neighbor)
 
                 cost_to_reach = searching_from_heap_node.distance
-                cost_to_reach += np.linalg.norm(searching_from_joint_angles - neighbor_joint_angles)
+                cost_to_reach += euclidean_distance(searching_from_joint_angles, neighbor_joint_angles)
 
-                estimated_remaining_cost = np.linalg.norm(searching_from_joint_angles - self.problem.end_state)
+                estimated_remaining_cost = euclidean_distance(searching_from_joint_angles, self.problem.end_state)
                 neighbor_path_distance = cost_to_reach + estimated_remaining_cost
 
                 min_cost_parents[tuple(neighbor)] = searching_from_heap_node.state
@@ -115,19 +114,22 @@ class AStar(Planner):
 
             current_iteration += 1
 
-        if current_iteration >= max_num_iterations:
+        if current_iteration >= self.parameters.max_num_iterations:
             return None
         return self.convert_graph_to_path(min_cost_parents, final_idxs)
 
     def convert_graph_to_path(self, min_cost_parents: dict, goal_state_idxs: np.ndarray) -> np.ndarray:
-        """Converts the provided ...
+        """Converts the provided graph (represented as a dict) into a path from the start state to the goal state.
 
         Args:
-
+            min_cost_parents: dict
+                Maps a c-space point to the c-space point who is the min cost neighbor from the start state.
+            goal_state_idxs: numpy.ndarray
+                The goal state represented in grid index space.
 
         Returns:
             numpy.ndarray:
-                The computed path.
+                Path from the start state to the goal state.
         """
 
         current_state = tuple(goal_state_idxs)
@@ -152,32 +154,46 @@ class AStar(Planner):
                                indices: np.ndarray,
                                lower_limit=0.,
                                upper_limit=np.pi * 2) -> np.ndarray:
-        """..."""
+        """Maps c-space grid indices to the corresponding joint angles.
+
+        Args:
+            grid: numpy.ndarray
+            indices: numpy.ndarray
+            lower_limit
+                Joint limit in radians.
+            upper_limit
+                Joint limit in radians.
+
+        Returns:
+            numpy.ndarray:
+                Joint angles in radians.
+        """
 
         range = upper_limit - lower_limit
         delta = range / len(grid[0])
         return np.array([index * delta for index in indices])
 
-    def joint_angles_to_indices(self, grid: np.ndarray,
+    def joint_angles_to_indices(self,
+                                grid: np.ndarray,
                                 joint_angles: np.ndarray,
                                 lower_limit=0.,
                                 upper_limit=np.pi * 2) -> np.ndarray:
-        """..."""
-
-        range = upper_limit - lower_limit
-        delta = range / len(grid[0])  # range / 100
-        return np.array([int(joint_angle / delta) for joint_angle in joint_angles])
-
-
-    def euclidean_distance(self, point1: np.ndarray, point2: np.ndarray) -> float:
-        """Calculates the Euclidean distance between two N-dimensional points.
+        """Maps joint angles to the corresponding C-space grid indices.
 
         Args:
-            point1: numpy.ndarray
-            point2: numpy.ndarray
+            grid: numpy.ndarray
+            joint_angles: numpy.ndarray
+                Expressed in radians.
+            lower_limit
+                Joint limit in radians.
+            upper_limit
+                Joint limit in radians.
 
         Returns:
-            float:
-                Distance in RN space.
+            numpy.ndarray:
+                The joint angles corresponding C-space grid indices.
         """
-        return np.linalg.norm(point1 - point2)
+
+        range = upper_limit - lower_limit
+        delta = range / len(grid[0])
+        return np.array([int(joint_angle / delta) for joint_angle in joint_angles])

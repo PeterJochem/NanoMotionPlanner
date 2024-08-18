@@ -13,7 +13,7 @@ def test_a_star_planner():
     end_state = start_state + (delta * 1.0)
     problem = JointStateToJointStatePlanningProblem(robot, start_state, end_state)
     time_scaler = None
-    parameters = AStarPlanningParameters(6, 100, 500)
+    parameters = AStarPlanningParameters(6, 100, 50000)
     planner = AStar(problem, time_scaler, parameters)
     traj = planner.plan_path()
     assert traj is not None and len(traj) > 2

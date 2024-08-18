@@ -13,7 +13,6 @@ def test_rrt_planner():
     problem = JointStateToJointStatePlanningProblem(robot, start_state, end_state)
     time_scaler = None
     planner = RRT(problem, time_scaler)
-
     traj = planner.plan_path()
     assert traj is not None and len(traj) > 2
 

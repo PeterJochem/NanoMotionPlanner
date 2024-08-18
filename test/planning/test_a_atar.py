@@ -1,22 +1,19 @@
 import numpy as np
-import pytest
+from planning.a_star import AStar
+from planning.a_star_planning_parameters import AStarPlanningParameters
 from planning.planning_problem import JointStateToJointStatePlanningProblem
-from planning.rrt import RRT
 from robots.ur5 import UR5
 
 
-@pytest.mark.skip(reason="Temp")
-def test_rrt_planner():
+def test_a_star_planner():
 
     robot = UR5()
     start_state = np.zeros(6)
-    delta = np.array([0.1, 0.2, 0., 0., 0., 0.])
-    end_state = start_state + (delta * 15)
+    delta = np.array([0.1, 0.2, 0.1, 0.2, 0.3, 0.4])
+    end_state = start_state + (delta * 1.0)
     problem = JointStateToJointStatePlanningProblem(robot, start_state, end_state)
     time_scaler = None
-    planner = RRT(problem, time_scaler)
-
+    parameters = AStarPlanningParameters(6, 100, 500)
+    planner = AStar(problem, time_scaler, parameters)
     traj = planner.plan_path()
     assert traj is not None and len(traj) > 2
-
-

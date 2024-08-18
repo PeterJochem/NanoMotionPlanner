@@ -1,3 +1,5 @@
+from typing import Optional
+
 import numpy as np
 from planning.graphs.graph import NaiveListGraph, Graph
 from planning.planner import Planner
@@ -22,11 +24,11 @@ class RRT(Planner):
         """
         super().__init__(problem, time_scaler)
 
-    def plan_path(self) -> np.ndarray:
+    def plan_path(self) -> Optional[np.ndarray]:
         """Plans a series of kinematic states which move the robot from the start state to the goal state.
 
         Returns:
-            numpy.ndarray:
+            Optional[numpy.ndarray]:
                 A series of kinematic states which move the robot from the start state to the goal state.
         """
 
@@ -50,7 +52,7 @@ class RRT(Planner):
         while current_distance > termination_distance:
 
             if current_iteration > max_number_of_iterations:
-                raise RuntimeError("Failed to solve the path planning problem in the given number of iterations.")
+                return None
 
             random_joint_state = robot.random_joint_state()
             if current_iteration % sample_goal_state_rate == 0:

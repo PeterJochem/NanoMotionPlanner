@@ -1,6 +1,6 @@
 import numpy as np
 import heapq
-from planning.a_start_planning_parameters import AStarPlanningParameters
+from planning.a_star_planning_parameters import AStarPlanningParameters
 from planning.planner import Planner
 from planning.planning_problem import PlanningProblem
 from planning.time_scaling.time_scaler import TimeScaler

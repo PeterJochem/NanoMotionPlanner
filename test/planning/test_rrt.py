@@ -5,13 +5,12 @@ from planning.rrt import RRT
 from robots.ur5 import UR5
 
 
-@pytest.mark.skip(reason="Temp")
 def test_rrt_planner():
 
     robot = UR5()
     start_state = np.zeros(6)
     delta = np.array([0.1, 0.2, 0., 0., 0., 0.])
-    end_state = start_state + (delta * 15)
+    end_state = start_state + (delta * 1)
     problem = JointStateToJointStatePlanningProblem(robot, start_state, end_state)
     time_scaler = None
     planner = RRT(problem, time_scaler)

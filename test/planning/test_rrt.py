@@ -15,5 +15,4 @@ def test_rrt_planner():
     planner = RRT(problem, time_scaler)
     traj = planner.plan_path()
     assert traj is not None and len(traj) > 2
-
-
+    assert np.linalg.norm(traj[-1] - end_state) < 0.25

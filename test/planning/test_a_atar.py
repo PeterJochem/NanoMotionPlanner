@@ -17,3 +17,4 @@ def test_a_star_planner():
     planner = AStar(problem, time_scaler, parameters)
     traj = planner.plan_path()
     assert traj is not None and len(traj) > 2
+    assert np.linalg.norm(traj[-1] - end_state) < 0.25
